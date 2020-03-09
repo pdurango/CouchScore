@@ -21,13 +21,11 @@ namespace CouchScore.Migrations
 
             modelBuilder.Entity("CouchScore.Models.Scorecard", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("URL")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
 
                     b.HasKey("Id");
 
@@ -44,8 +42,8 @@ namespace CouchScore.Migrations
                     b.Property<DateTime>("Created")
                         .HasColumnType("datetime2");
 
-                    b.Property<int?>("ScorecardId")
-                        .HasColumnType("int");
+                    b.Property<string>("ScorecardId")
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
 
@@ -74,47 +72,17 @@ namespace CouchScore.Migrations
                     b.ToTable("ScorecardMatchOption");
                 });
 
-            modelBuilder.Entity("CouchScore.Models.User", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("Email")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Password")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("ScorecardMatchId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ScorecardMatchId");
-
-                    b.ToTable("User");
-                });
-
             modelBuilder.Entity("CouchScore.Models.ScorecardMatch", b =>
                 {
-                    b.HasOne("CouchScore.Models.Scorecard", null)
+                    b.HasOne("CouchScore.Models.Scorecard", "Scorecard")
                         .WithMany("ScorecardMatches")
                         .HasForeignKey("ScorecardId");
                 });
 
             modelBuilder.Entity("CouchScore.Models.ScorecardMatchOption", b =>
                 {
-                    b.HasOne("CouchScore.Models.ScorecardMatch", null)
+                    b.HasOne("CouchScore.Models.ScorecardMatch", "ScorecardMatch")
                         .WithMany("ScorecardMatchOptions")
-                        .HasForeignKey("ScorecardMatchId");
-                });
-
-            modelBuilder.Entity("CouchScore.Models.User", b =>
-                {
-                    b.HasOne("CouchScore.Models.ScorecardMatch", null)
-                        .WithMany("Users")
                         .HasForeignKey("ScorecardMatchId");
                 });
 #pragma warning restore 612, 618

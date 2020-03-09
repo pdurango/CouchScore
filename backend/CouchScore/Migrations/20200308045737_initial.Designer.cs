@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CouchScore.Migrations
 {
     [DbContext(typeof(ScorecardContext))]
-    [Migration("20200302011557_Initial")]
-    partial class Initial
+    [Migration("20200308045737_initial")]
+    partial class initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -23,17 +23,15 @@ namespace CouchScore.Migrations
 
             modelBuilder.Entity("CouchScore.Models.Scorecard", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("URL")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Scorecards");
+                    b.ToTable("Scorecard");
                 });
 
             modelBuilder.Entity("CouchScore.Models.ScorecardMatch", b =>
@@ -43,17 +41,17 @@ namespace CouchScore.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int?>("ScorecardId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("created")
+                    b.Property<DateTime>("Created")
                         .HasColumnType("datetime2");
+
+                    b.Property<string>("ScorecardId")
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
 
                     b.HasIndex("ScorecardId");
 
-                    b.ToTable("ScorecardMatches");
+                    b.ToTable("ScorecardMatch");
                 });
 
             modelBuilder.Entity("CouchScore.Models.ScorecardMatchOption", b =>
@@ -73,7 +71,7 @@ namespace CouchScore.Migrations
 
                     b.HasIndex("ScorecardMatchId");
 
-                    b.ToTable("ScorecardMatchOptions");
+                    b.ToTable("ScorecardMatchOption");
                 });
 
             modelBuilder.Entity("CouchScore.Models.User", b =>

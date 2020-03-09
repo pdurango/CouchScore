@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -7,9 +8,11 @@ namespace CouchScore.Models
 {
     public class Scorecard
     {
-        public int Id { get; set; }
-        public string URL { get; set; }
-
-        public ICollection<ScorecardMatch> ScorecardMatches { get; set; }
+        [DatabaseGenerated(DatabaseGeneratedOption.None)]
+        public string Id { get; set; } //will act as url
+        // public string URL { get; set; }
+        public DateTime CreatedDate { get; set; }
+        
+        public virtual ICollection<ScorecardMatch> ScorecardMatches { get; set; }
     }
 }

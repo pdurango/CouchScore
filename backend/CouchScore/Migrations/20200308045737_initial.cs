@@ -3,45 +3,44 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace CouchScore.Migrations
 {
-    public partial class Initial : Migration
+    public partial class initial : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "Scorecards",
+                name: "Scorecard",
                 columns: table => new
                 {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    URL = table.Column<string>(nullable: true)
+                    Id = table.Column<string>(nullable: false),
+                    CreatedDate = table.Column<DateTime>(nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Scorecards", x => x.Id);
+                    table.PrimaryKey("PK_Scorecard", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
-                name: "ScorecardMatches",
+                name: "ScorecardMatch",
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    created = table.Column<DateTime>(nullable: false),
-                    ScorecardId = table.Column<int>(nullable: true)
+                    Created = table.Column<DateTime>(nullable: false),
+                    ScorecardId = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ScorecardMatches", x => x.Id);
+                    table.PrimaryKey("PK_ScorecardMatch", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_ScorecardMatches_Scorecards_ScorecardId",
+                        name: "FK_ScorecardMatch_Scorecard_ScorecardId",
                         column: x => x.ScorecardId,
-                        principalTable: "Scorecards",
+                        principalTable: "Scorecard",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
-                name: "ScorecardMatchOptions",
+                name: "ScorecardMatchOption",
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
@@ -51,11 +50,11 @@ namespace CouchScore.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ScorecardMatchOptions", x => x.Id);
+                    table.PrimaryKey("PK_ScorecardMatchOption", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_ScorecardMatchOptions_ScorecardMatches_ScorecardMatchId",
+                        name: "FK_ScorecardMatchOption_ScorecardMatch_ScorecardMatchId",
                         column: x => x.ScorecardMatchId,
-                        principalTable: "ScorecardMatches",
+                        principalTable: "ScorecardMatch",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
@@ -74,21 +73,21 @@ namespace CouchScore.Migrations
                 {
                     table.PrimaryKey("PK_User", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_User_ScorecardMatches_ScorecardMatchId",
+                        name: "FK_User_ScorecardMatch_ScorecardMatchId",
                         column: x => x.ScorecardMatchId,
-                        principalTable: "ScorecardMatches",
+                        principalTable: "ScorecardMatch",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_ScorecardMatches_ScorecardId",
-                table: "ScorecardMatches",
+                name: "IX_ScorecardMatch_ScorecardId",
+                table: "ScorecardMatch",
                 column: "ScorecardId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ScorecardMatchOptions_ScorecardMatchId",
-                table: "ScorecardMatchOptions",
+                name: "IX_ScorecardMatchOption_ScorecardMatchId",
+                table: "ScorecardMatchOption",
                 column: "ScorecardMatchId");
 
             migrationBuilder.CreateIndex(
@@ -100,16 +99,16 @@ namespace CouchScore.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "ScorecardMatchOptions");
+                name: "ScorecardMatchOption");
 
             migrationBuilder.DropTable(
                 name: "User");
 
             migrationBuilder.DropTable(
-                name: "ScorecardMatches");
+                name: "ScorecardMatch");
 
             migrationBuilder.DropTable(
-                name: "Scorecards");
+                name: "Scorecard");
         }
     }
 }

@@ -11,6 +11,7 @@ namespace CouchScore.Models
         public DateTime Created { get; set; }
         
         public ICollection<ScorecardMatchOption> ScorecardMatchOptions { get; set; }
-        public ICollection<User> Users { get; set; }
+        //public ICollection<User> Users { get; set; }
+        public virtual Scorecard Scorecard { get; set; }
     }
 }
