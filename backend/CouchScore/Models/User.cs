@@ -11,6 +11,6 @@ namespace CouchScore.Models
         public string Email { get; set; }
         public string Password { get; set; }
 
-        //        public virtual Scorecard Scorecard { get; set; }
+        public virtual ICollection<ScorecardLinkedUser> ScorecardLinkedUsers { get; set; }
     }
 }

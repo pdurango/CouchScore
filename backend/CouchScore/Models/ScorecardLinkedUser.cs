@@ -5,12 +5,12 @@ using System.Threading.Tasks;
 
 namespace CouchScore.Models
 {
-    public class ScorecardMatchOption
+    public class ScorecardLinkedUser
     {
         public int Id { get; set; }
-        public string Name { get; set; }
 
-        public virtual ScorecardMatch ScorecardMatch { get; set; }
+        public virtual Scorecard Scorecard { get; set; }
+        public virtual User User { get; set; }
 
         public virtual ICollection<ScorecardUserSelection> ScorecardUserSelections { get; set; }
     }
