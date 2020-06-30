@@ -13,13 +13,36 @@ import axios from 'axios'
 export default {
     name: "Create",
     components: {
-        Scorecard
+        Scorecard,
+        //ScorecardModel
     },
     data() {
         return {
-            scorecard: {    
-                title: ''
-            }
+            scorecard: {
+    "id": "LaCQ6lGp0c7LQuR5rMA",
+    "createdDate": "2020-06-29",
+    "title": '4',
+    "scorecardLinkedUsers": null,
+    "scorecardMatches": [
+        {
+            "id": 6,
+            "created": "0001-01-01",
+            "title": '3',
+            "scorecardMatchOptions": [
+                {
+                    "id": 11,
+                    "title": '1',
+                    "scorecardUserSelections": null
+                },
+                {
+                    "id": 12,
+                    "title": '2',
+                    "scorecardUserSelections": null
+                }
+            ]
+        }
+    ]
+}
         }
     },
     methods: {

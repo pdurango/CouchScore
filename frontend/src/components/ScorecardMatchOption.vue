@@ -1,6 +1,6 @@
 <template>
-    <div>
-        <p>{{ scorecardMatchOption.name }}</p>
+    <div class="centered3">
+        <p>{{ scorecardMatchOption.title }}</p>
     </div>
 </template>
 
@@ -12,5 +12,10 @@ export default {
 </script>
 
 <style scoped>
-
+    .centered3 {
+        border: 2px solid blue;
+        border-radius: 25px;
+        height: 10%;
+        width: 10%;
+    }
 </style>

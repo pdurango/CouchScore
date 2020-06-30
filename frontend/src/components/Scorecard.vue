@@ -7,7 +7,7 @@
         <div v-bind:key="match.id" v-for="match in scorecard.scorecardMatches">
             <ScorecardMatch v-bind:scorecardMatch="match"/>
         </div>
-        <button v-on:click="addScorecardMatchRow">Add Match</button>
+        <!--<button v-on:click="addScorecardMatchRow">Add Match</button>-->
     </div>
 </template>
 
@@ -28,20 +28,11 @@ export default {
             this.$emit('update-local-scorecard', newScorecard);
         },
         addScorecardMatchRow() {
-            this.$set(this.scorecard, 0, [{"ScorecardMatches":{ id: 1, quantity: 1 }}]);
+            this.$set(this.scorecard, 'ScorecardMatches', []);
             //var updated = this.scorecard;
            // updated.push({"element":{ id: 1, quantity: 1 }});
            // this.$emit('update-local-scorecard', updated);
         }
-    },
-    created() {
-        if(!this.isNewScorecard)
-            return;
-        const modifed = {
-            "Scorecard":{ id: 1, quantity: 1 }
-            }
-        this.$emit('update-local-scorecard', modifed);
-
     }
 }
 </script>
@@ -61,11 +52,11 @@ export default {
     }
 
     .centered {
-        border: 2px solid black;
+        border: 2px solid green;
         padding: 10px;
         border-radius: 25px;
         position: fixed;
-        height: 30%;
+        height: 80%;
         width: 50%;
         top: 50%;
         left: 50%;
