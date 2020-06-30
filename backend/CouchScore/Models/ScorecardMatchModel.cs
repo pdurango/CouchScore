@@ -9,7 +9,8 @@ namespace CouchScore.Models
     {
         public int Id { get; set; }
         public DateTime Created { get; set; }
-        
+        public string Title { get; set; }
+
         public ICollection<ScorecardMatchOption> ScorecardMatchOptions { get; set; }
         //public ICollection<User> Users { get; set; }
         public virtual Scorecard Scorecard { get; set; }

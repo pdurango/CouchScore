@@ -8,7 +8,7 @@ namespace CouchScore.Models
     public class ScorecardMatchOption
     {
         public int Id { get; set; }
-        public string Name { get; set; }
+        public string Title { get; set; }
 
         public virtual ScorecardMatch ScorecardMatch { get; set; }
 

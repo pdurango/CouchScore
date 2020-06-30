@@ -12,7 +12,8 @@ namespace CouchScore.Models
         public string Id { get; set; } //will act as url
         // public string URL { get; set; }
         public DateTime CreatedDate { get; set; }
-        
+        public string Title { get; set; }
+
         public virtual ICollection<ScorecardLinkedUser> ScorecardLinkedUsers { get; set; }
         public virtual ICollection<ScorecardMatch> ScorecardMatches { get; set; }
     }
