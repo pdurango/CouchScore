@@ -1,13 +1,21 @@
 <template>
     <div class="centered">
-        <form @submit.prevent="updateScorecard">
-            <input type="text" v-model="scorecard.title" name="title" placeholder="Add Scorecard Name...">
-            <input type="submit" value="Submit" class="btn">
-        </form>
-        <div v-bind:key="match.id" v-for="match in scorecard.scorecardMatches">
-            <ScorecardMatch v-bind:scorecardMatch="match"/>
-        </div>
-        <!--<button v-on:click="addScorecardMatchRow">Add Match</button>-->
+        <v-card>
+            <v-card-title>
+                <h1>dfdf</h1>
+            </v-card-title>
+            <v-card-text>
+                <v-form class="px-3">
+                    <v-text-field label="Scorecard Name" v-model="scorecard.title"></v-text-field>
+                    <v-btn class="success mx-0 mt-3" @click.prevent="saveScorecard">Save Scorecard</v-btn>
+                    <v-btn class="primary mx-0 mt-3" @click="addScorecardMatchObject">Add a match</v-btn>
+                </v-form>
+            </v-card-text>
+        
+            <div v-if="scorecard.scorecardMatches.length > 0">
+                <ScorecardMatch v-bind:key="match.id" v-for="match in scorecard.scorecardMatches" v-bind:scorecardMatch="match" v-bind:isNewScorecard="true"/>
+            </div>
+        </v-card>
     </div>
 </template>
 
@@ -27,12 +35,27 @@ export default {
             //Send up to parent
             this.$emit('update-local-scorecard', newScorecard);
         },
-        addScorecardMatchRow() {
-            this.$set(this.scorecard, 'ScorecardMatches', []);
+        addScorecardMatchArray() {
+            this.$set(this.scorecard, 'scorecardMatches', []);
             //var updated = this.scorecard;
            // updated.push({"element":{ id: 1, quantity: 1 }});
            // this.$emit('update-local-scorecard', updated);
+        },
+        addScorecardMatchObject() {
+            const match = {
+                title: ''
+            }
+            var count = this.scorecard.scorecardMatches.length;
+            this.$set(this.scorecard.scorecardMatches, count, match);
+        },
+        saveScorecard() {
+            this.$emit('save-scorecard', this.scorecard);
         }
+    },
+    created()
+    {
+        if(this.isNewScorecard)
+            this.addScorecardMatchArray();
     }
 }
 </script>

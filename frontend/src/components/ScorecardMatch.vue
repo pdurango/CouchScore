@@ -1,7 +1,8 @@
 <template>
     <div class="centered2">
-        <div v-bind:key="matchOptions.id" v-for="matchOptions in scorecardMatch.scorecardMatchOptions">
-            <ScorecardMatchOption v-bind:scorecardMatchOption="matchOptions"/>
+                <v-btn color="green" @click="addScorecardMatchOptionObject">Add an option</v-btn>
+        <div v-if="scorecardMatch.scorecardMatchOptions.length > 0">
+            <ScorecardMatchOption v-bind:key="matchOptions.id" v-for="matchOptions in scorecardMatch.scorecardMatchOptions" v-bind:scorecardMatchOption="matchOptions"/>
         </div>
     </div>
 </template>
@@ -13,7 +14,24 @@ export default {
     components: {
         ScorecardMatchOption
     },
-    props: ["scorecardMatch", "isNewScorecard"]
+    props: ["scorecardMatch", "isNewScorecard"],
+    methods: {
+        addScorecardMatchOptionArray() {
+            this.$set(this.scorecardMatch, 'scorecardMatchOptions', []);
+        },
+        addScorecardMatchOptionObject() {
+            const option = {
+                title: ''
+            }
+            var count = this.scorecardMatch.scorecardMatchOptions.length;
+            this.$set(this.scorecardMatch.scorecardMatchOptions, count, option);
+        }   
+    },
+    created()
+    {
+        if(this.isNewScorecard)
+            this.addScorecardMatchOptionArray();
+    }
 }
 </script>
 
