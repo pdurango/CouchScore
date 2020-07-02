@@ -1,24 +1,64 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace CouchScore.Migrations
 {
-    public partial class UserSelectionAdded1 : Migration
+    public partial class update1 : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.CreateTable(
-                name: "User",
-                columns: table => new
-                {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Email = table.Column<string>(nullable: true),
-                    Password = table.Column<string>(nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_User", x => x.Id);
-                });
+            migrationBuilder.DropForeignKey(
+                name: "FK_User_ScorecardMatch_ScorecardMatchId",
+                table: "User");
+
+            migrationBuilder.DropIndex(
+                name: "IX_User_ScorecardMatchId",
+                table: "User");
+
+            migrationBuilder.DropColumn(
+                name: "ScorecardMatchId",
+                table: "User");
+
+            migrationBuilder.DropColumn(
+                name: "Name",
+                table: "ScorecardMatchOption");
+
+            migrationBuilder.DropColumn(
+                name: "Created",
+                table: "ScorecardMatch");
+
+            migrationBuilder.AddColumn<DateTime>(
+                name: "CreatedDate",
+                table: "ScorecardMatchOption",
+                nullable: false,
+                defaultValue: new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified));
+
+            migrationBuilder.AddColumn<string>(
+                name: "Title",
+                table: "ScorecardMatchOption",
+                nullable: true);
+
+            migrationBuilder.AddColumn<DateTime>(
+                name: "CreatedDate",
+                table: "ScorecardMatch",
+                nullable: false,
+                defaultValue: new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified));
+
+            migrationBuilder.AddColumn<string>(
+                name: "Title",
+                table: "ScorecardMatch",
+                nullable: true);
+
+            migrationBuilder.AddColumn<int>(
+                name: "CreatedBy",
+                table: "Scorecard",
+                nullable: false,
+                defaultValue: 0);
+
+            migrationBuilder.AddColumn<string>(
+                name: "Title",
+                table: "Scorecard",
+                nullable: true);
 
             migrationBuilder.CreateTable(
                 name: "ScorecardLinkedUser",
@@ -101,8 +141,61 @@ namespace CouchScore.Migrations
             migrationBuilder.DropTable(
                 name: "ScorecardLinkedUser");
 
-            migrationBuilder.DropTable(
-                name: "User");
+            migrationBuilder.DropColumn(
+                name: "CreatedDate",
+                table: "ScorecardMatchOption");
+
+            migrationBuilder.DropColumn(
+                name: "Title",
+                table: "ScorecardMatchOption");
+
+            migrationBuilder.DropColumn(
+                name: "CreatedDate",
+                table: "ScorecardMatch");
+
+            migrationBuilder.DropColumn(
+                name: "Title",
+                table: "ScorecardMatch");
+
+            migrationBuilder.DropColumn(
+                name: "CreatedBy",
+                table: "Scorecard");
+
+            migrationBuilder.DropColumn(
+                name: "Title",
+                table: "Scorecard");
+
+            migrationBuilder.AddColumn<int>(
+                name: "ScorecardMatchId",
+                table: "User",
+                type: "int",
+                nullable: true);
+
+            migrationBuilder.AddColumn<string>(
+                name: "Name",
+                table: "ScorecardMatchOption",
+                type: "nvarchar(max)",
+                nullable: true);
+
+            migrationBuilder.AddColumn<DateTime>(
+                name: "Created",
+                table: "ScorecardMatch",
+                type: "datetime2",
+                nullable: false,
+                defaultValue: new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified));
+
+            migrationBuilder.CreateIndex(
+                name: "IX_User_ScorecardMatchId",
+                table: "User",
+                column: "ScorecardMatchId");
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_User_ScorecardMatch_ScorecardMatchId",
+                table: "User",
+                column: "ScorecardMatchId",
+                principalTable: "ScorecardMatch",
+                principalColumn: "Id",
+                onDelete: ReferentialAction.Restrict);
         }
     }
 }

@@ -8,10 +8,17 @@ using Microsoft.EntityFrameworkCore;
 using CouchScore.DAL;
 using CouchScore.Models;
 using CouchScore.Helpers;
+using Microsoft.AspNetCore.Cors;
 
+/*Helpful Links
+ * 
+ * https://stackoverflow.com/questions/22680446/entity-framework-rollback-and-remove-bad-migration
+ * 
+ */
 namespace CouchScore.Controllers
 {
-    [Route("api/scorecard")] //api/[controller]
+    [EnableCors("_myAllowSpecificOrigins")]
+    [Route("scorecards")] //api/[controller]
     [ApiController]
     public class ScorecardsController : ControllerBase
     {
@@ -49,8 +56,8 @@ namespace CouchScore.Controllers
             return scorecard;
         }
         */
-        // GET: api/Scorecards/5
-        [HttpGet("{id}")]
+// GET: api/Scorecards/5
+[HttpGet("{id}")]
         public async Task<ActionResult<Scorecard>> GetScorecard(string id)
         {
             Scorecard scorecard = await m_context.Scorecards
@@ -126,32 +133,21 @@ namespace CouchScore.Controllers
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for
         // more details see https://aka.ms/RazorPagesCRUD.
         [HttpPost]
-        public async Task<ActionResult<string>> PostScorecard()
+        public async Task<ActionResult<string>> PostScorecard([FromBody] Scorecard scorecard)
         {
-            RandomIdentifier random = new RandomIdentifier();
-            Scorecard scorecard = new Scorecard() { Id = random.GenerateUniqueIdentifier(), CreatedDate = DateTime.Now};
-           //ScorecardMatch scorecardMatch = new ScorecardMatch() {  }
             m_context.Scorecards.Add(scorecard);
 
-            //////////////
-            ScorecardMatch match = new ScorecardMatch();
-            match.Scorecard = scorecard;
-            m_context.ScorecardMatches.Add(match);
+            foreach (ScorecardMatch match in scorecard.ScorecardMatches)
+            {
+                m_context.ScorecardMatches.Add(match);
 
-            List<ScorecardMatchOption> options = new List<ScorecardMatchOption>();
-            ScorecardMatchOption op1 = new ScorecardMatchOption();
-            ScorecardMatchOption op2 = new ScorecardMatchOption();
-            op1.ScorecardMatch = match;
-            op2.ScorecardMatch = match;
-            options.Add(op1);
-            m_context.ScorecardMatchOptions.Add(op1);
-            options.Add(op2);
-            m_context.ScorecardMatchOptions.Add(op2);
-            //////////
-            
+                foreach (ScorecardMatchOption option in match.ScorecardMatchOptions)
+                    m_context.ScorecardMatchOptions.Add(option);
+            }
+
             await m_context.SaveChangesAsync();
 
-            return CreatedAtAction("GetScorecard", new { id = scorecard.Id }, scorecard);
+            return CreatedAtAction("PostScorecard", new { id = scorecard.Id });
         }
 
         // DELETE: api/Scorecards/5
