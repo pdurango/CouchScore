@@ -1,24 +1,27 @@
 <template>
   <v-app>
-    <v-main>
-      <Header/>
-      <router-view/>
+    <v-main class="grey lighten-4">
+      <NavBar />
+      <Header />
+      <router-view></router-view>
     </v-main>
   </v-app>
 </template>
 
 <script>
-import Header from './components/layout/Header.vue'
+import Header from "./components/layout/Header.vue";
+import NavBar from "./components/NavBar.vue";
 
 export default {
-  name: 'App',
+  name: "App",
 
   components: {
     Header,
+    NavBar
   },
 
   data: () => ({
     //
-  }),
+  })
 };
 </script>
