@@ -1,5 +1,5 @@
 <template>
-   <v-container v-if="isNewScorecard" grid-list-xl text-xs-center>
+   <v-container v-if="isEditable" grid-list-xl text-xs-center>
       <v-layout>
          <v-flex xs10>
             <v-text-field label="Scorecard Option" v-model="scorecardMatchOption.title" />
@@ -14,7 +14,7 @@
 <script>
 export default {
    name: "ScorecardMatchOption",
-   props: ["scorecardMatchOption", "isNewScorecard"],
+   props: ["scorecardMatchOption", "isEditable"],
 };
 </script>
 

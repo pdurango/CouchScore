@@ -10,7 +10,7 @@ namespace CouchScore.Models
         public int Id { get; set; }
 
         public virtual Scorecard Scorecard { get; set; }
-        public virtual User User { get; set; }
+        public virtual UserInfo User { get; set; }
 
         public virtual ICollection<ScorecardUserSelection> ScorecardUserSelections { get; set; }
     }

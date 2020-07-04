@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace CouchScore.Models
 {
-    public class User
+    public class UserInfo
     {
         public int Id { get; set; }
         public string Email { get; set; }

@@ -9,12 +9,12 @@
                <v-card-text>
                   <v-btn class="primary mx-0 mt-3" @click="addScorecardMatchOptionObject">Add an option</v-btn>
 
-                  <div v-if="isNewScorecard">
+                  <div v-if="isEditable">
                      <ScorecardMatchOption
                         v-bind:key="matchOptions.id"
                         v-for="matchOptions in scorecardMatch.scorecardMatchOptions"
                         v-bind:scorecardMatchOption="matchOptions"
-                        v-bind:isNewScorecard="true"
+                        v-bind:isEditable="true"
                      />
                   </div>
                   <v-radio-group v-else v-model="scorecardMatch.userSelection" :mandatory="false">
@@ -38,7 +38,7 @@ export default {
    components: {
       ScorecardMatchOption,
    },
-   props: ["scorecardMatch", "isNewScorecard"],
+   props: ["scorecardMatch", "isEditable"],
    methods: {
       addScorecardMatchOptionArray() {
          this.$set(this.scorecardMatch, "scorecardMatchOptions", []);
@@ -53,7 +53,7 @@ export default {
       },
    },
    created() {
-      if (this.isNewScorecard) this.addScorecardMatchOptionArray();
+      if (this.isEditable) this.addScorecardMatchOptionArray();
    },
 };
 </script>

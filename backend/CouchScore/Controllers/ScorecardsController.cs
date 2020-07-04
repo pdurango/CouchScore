@@ -9,6 +9,7 @@ using CouchScore.DAL;
 using CouchScore.Models;
 using CouchScore.Helpers;
 using Microsoft.AspNetCore.Cors;
+using Microsoft.AspNetCore.Authorization;
 
 /*Helpful Links
  * 
@@ -17,6 +18,7 @@ using Microsoft.AspNetCore.Cors;
  */
 namespace CouchScore.Controllers
 {
+    [Authorize]
     [EnableCors("_myAllowSpecificOrigins")]
     [Route("scorecards")] //api/[controller]
     [ApiController]
