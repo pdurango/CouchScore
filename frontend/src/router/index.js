@@ -27,6 +27,14 @@ const routes = [
       component: () => import(/* webpackChunkName: "about" */ "../views/Create.vue"),
    },
    {
+      path: "/my-scorecards",
+      name: "My Scorecards",
+      // route level code-splitting
+      // this generates a separate chunk (about.[hash].js) for this route
+      // which is lazy-loaded when the route is visited.
+      component: () => import(/* webpackChunkName: "about" */ "../views/MyScorecards.vue"),
+   },
+   {
       path: "/todo-home",
       name: "Todo Home",
       // route level code-splitting
@@ -41,6 +49,14 @@ const routes = [
       // this generates a separate chunk (about.[hash].js) for this route
       // which is lazy-loaded when the route is visited.
       component: () => import(/* webpackChunkName: "about" */ "../auth/Login.vue"),
+   },
+   {
+      path: "/logout",
+      name: "Logout",
+      // route level code-splitting
+      // this generates a separate chunk (about.[hash].js) for this route
+      // which is lazy-loaded when the route is visited.
+      component: () => import(/* webpackChunkName: "about" */ "../auth/Logout.vue"),
    },
 ];
 

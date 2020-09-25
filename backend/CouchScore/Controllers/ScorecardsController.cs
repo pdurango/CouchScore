@@ -20,7 +20,7 @@ namespace CouchScore.Controllers
 {
     [Authorize]
     [EnableCors("_myAllowSpecificOrigins")]
-    [Route("scorecards")] //api/[controller]
+    [Route("api/[controller]")]
     [ApiController]
     public class ScorecardsController : ControllerBase
     {
@@ -35,31 +35,13 @@ namespace CouchScore.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Scorecard>>> GetScorecards()
         {
-            return await m_context.Scorecards.ToListAsync();
+            var x = m_context.Scorecards.ToListAsync();
+            return await x;
+           // return await m_context.Scorecards.ToListAsync();
         }
 
-        /*
-        // GET: api/Scorecards
-        [HttpGet("strucure")]
-        public Scorecard GetScorecardStructure()
-        {
-            List<ScorecardMatchOption> options = new List<ScorecardMatchOption>();
-            ScorecardMatchOption option = new ScorecardMatchOption();
-            options.Add(option);
-
-            List<ScorecardMatch> matches = new List<ScorecardMatch>();
-            ScorecardMatch match = new ScorecardMatch();
-            match.ScorecardMatchOptions = options;
-            matches.Add(match);
-
-            Scorecard scorecard = new Scorecard();
-            scorecard.ScorecardMatches = matches;
-            
-            return scorecard;
-        }
-        */
-// GET: api/Scorecards/5
-[HttpGet("{id}")]
+        // GET: api/Scorecards/5
+        [HttpGet("{id}")]
         public async Task<ActionResult<Scorecard>> GetScorecard(string id)
         {
             Scorecard scorecard = await m_context.Scorecards

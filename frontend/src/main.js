@@ -7,7 +7,7 @@ import "material-design-icons-iconfont/dist/material-design-icons.css"; //https:
 
 Vue.config.productionTip = false;
 axios.defaults.baseURL = "https://localhost:5001/api";
-
+axios.defaults.headers.Authorization = "Bearer " + localStorage.getItem("authToken");
 new Vue({
    router,
    vuetify,

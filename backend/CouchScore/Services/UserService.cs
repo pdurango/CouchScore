@@ -25,7 +25,7 @@ namespace CouchScore.Services
 		// users hardcoded for simplicity, store in a db with hashed passwords in production applications
 		private List<User> _users = new List<User>
 		{
-			new User { Id = 1, FirstName = "Test", LastName = "User", Username = "test", Password = "test" }
+			new User { Id = 1, FirstName = "Test", LastName = "User", Username = "testtest", Password = "testtest" }
 		};
 
 		private readonly AppSettings _appSettings;
@@ -68,7 +68,8 @@ namespace CouchScore.Services
 				{
 					new Claim(ClaimTypes.Name, user.Id.ToString(new CultureInfo("en-us")))
 				}),
-				Expires = DateTime.UtcNow.AddDays(7),
+				//Expires = DateTime.UtcNow.AddMinutes(1),
+				Expires = DateTime.UtcNow.AddDays(365), //todo - change to proper value
 				SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
 			};
 			SecurityToken token = tokenHandler.CreateToken(tokenDescriptor);

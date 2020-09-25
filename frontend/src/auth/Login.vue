@@ -22,9 +22,9 @@
                   <v-row>
                     <v-col cols="12">
                       <v-text-field
-                        v-model="loginEmail"
-                        :rules="loginEmailRules"
-                        label="E-mail"
+                        v-model="loginUserName"
+                        :rules="[rules.required, rules.min]"
+                        label="User Name"
                         required
                       ></v-text-field>
                     </v-col>
@@ -81,6 +81,14 @@
                       ></v-text-field>
                     </v-col>
                     <v-col cols="12">
+                      <v-text-field
+                        v-model="userName"
+                        :rules="[rules.required, rules.min]"
+                        label="User Name"
+                        required
+                      ></v-text-field>
+                    </v-col>
+                    <v-col cols="12">
                       <v-text-field v-model="email" :rules="emailRules" label="E-mail" required></v-text-field>
                     </v-col>
                     <v-col cols="12">
@@ -131,6 +139,8 @@
 </template>
 
 <script>
+import axios from "axios";
+
 export default {
   name: "Login",
   computed: {
@@ -141,7 +151,19 @@ export default {
   methods: {
     validate() {
       if (this.$refs.loginForm.validate()) {
-        // submit form to server/API here...
+        {
+          axios
+            .post("/users/authenticate", {
+              username: this.loginUserName,
+              password: this.loginPassword
+            })
+            .then(res => {
+              localStorage.setItem("authToken", res.data.token);
+              localStorage.setItem("username", res.data.username);
+              this.$router.push("/");
+            })
+            .catch(err => console.log(err));
+        }
       }
     },
     reset() {
@@ -160,11 +182,13 @@ export default {
     ],
     valid: true,
 
+    userName: "",
     firstName: "",
     lastName: "",
     email: "",
     password: "",
     verify: "",
+    loginUserName: "",
     loginPassword: "",
     loginEmail: "",
     loginEmailRules: [

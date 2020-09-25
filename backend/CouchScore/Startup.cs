@@ -69,10 +69,13 @@ namespace CouchScore
                 x.SaveToken = true;
                 x.TokenValidationParameters = new TokenValidationParameters
                 {
+                    //https://stackoverflow.com/questions/44252043/netcore-jwtbearerauthentication-not-rejecting-expired-tokens
                     ValidateIssuerSigningKey = true,
                     IssuerSigningKey = new SymmetricSecurityKey(key),
                     ValidateIssuer = false,
-                    ValidateAudience = false
+                    ValidateAudience = false,
+                    ValidateLifetime = true,
+                    ClockSkew = TimeSpan.Zero
                 };
             });
 

@@ -33,10 +33,11 @@ export default {
       drawer: false,
       links: [
         { icon: "home", text: "Home", route: "/" },
-        { icon: "person", text: "My Projects", route: "/about" },
+        { icon: "person", text: "Me", route: "/about" },
+        { icon: "bookmarks", text: "My Scorecards", route: "/my-scorecards" },
         { icon: "add", text: "Create Scorecard", route: "/create" },
         { icon: "list", text: "Todo List", route: "/todo-home" },
-        { icon: "mdi-login", text: "Login", route: "/login" }
+        { icon: "mdi-logout", text: "Logout", route: "/logout" }
       ]
     };
   }
