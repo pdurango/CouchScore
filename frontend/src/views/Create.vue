@@ -23,7 +23,7 @@ export default {
    },
    data() {
       return {
-         scorecard: { createdBy: 1 }, //fix this - dont add 1 manually - bad
+         scorecard: { },
          isEditable: Boolean,
       };
    },
