@@ -6,8 +6,11 @@ using System.Threading.Tasks;
 
 namespace CouchScore.Models
 {
-	public class AuthenticateRequest
+	public class AuthenticateRequestRegister
 	{
+		[Required]
+		public string Email { get; set; }
+
 		[Required]
 		public string Username { get; set; }
 

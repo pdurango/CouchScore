@@ -18,13 +18,25 @@ namespace WebApi.Controllers
         }
 
         [AllowAnonymous]
-        [HttpPost("authenticate")]
-        public IActionResult Authenticate([FromBody]AuthenticateRequest model)
+        [HttpPost("authenticate/login")]
+        public IActionResult AuthenticateLogin([FromBody]AuthenticateRequestLogin account)
         {
-            var response = _userService.Authenticate(model);
+            var response = _userService.AuthenticateLogin(account);
 
             if (response == null)
                 return BadRequest(new { message = "Username or password is incorrect" });
+
+            return Ok(response);
+        }
+
+        [AllowAnonymous]
+        [HttpPost("authenticate/register")]
+        public IActionResult AuthenticateRegister([FromBody]AuthenticateRequestRegister account)
+        {
+            var response = _userService.AuthenticateRegister(account);
+
+            if (response == null)
+                return BadRequest(new { message = "Account information is incorrect" });
 
             return Ok(response);
         }

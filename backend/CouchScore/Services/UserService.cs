@@ -16,7 +16,8 @@ namespace CouchScore.Services
 {
 	public interface IUserService
 	{
-		AuthenticateResponse Authenticate(AuthenticateRequest request);
+		AuthenticateResponse AuthenticateLogin(AuthenticateRequestLogin request);
+		AuthenticateResponse AuthenticateRegister(AuthenticateRequestRegister request);
 		IEnumerable<User> GetAll();
 	}
 
@@ -35,7 +36,20 @@ namespace CouchScore.Services
 			_appSettings = appSettings.Value;
 		}
 
-		public AuthenticateResponse Authenticate(AuthenticateRequest request)
+		public AuthenticateResponse AuthenticateLogin(AuthenticateRequestLogin request)
+		{
+			var user = _users.SingleOrDefault(x => x.Username == request.Username && x.Password == request.Password);
+
+			// return null if user not found
+			if (user == null) return null;
+
+			// authentication successful so generate jwt token
+			var token = GenerateJwtToken(user);
+
+			return new AuthenticateResponse(user, token);
+		}
+
+		public AuthenticateResponse AuthenticateRegister(AuthenticateRequestRegister request)
 		{
 			var user = _users.SingleOrDefault(x => x.Username == request.Username && x.Password == request.Password);
 

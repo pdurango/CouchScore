@@ -16,7 +16,6 @@
 
 <script>
 import Scorecard from "../components/Scorecard.vue";
-import axios from "axios";
 
 export default {
   name: "MyScorecards",
@@ -31,12 +30,12 @@ export default {
   },
   methods: {
     loadScorecards() {
-      axios
+      console.log("loadScorecards");
+      this.$api
         .get("/scorecards")
-        .then(res => (this.scorecards = res.scorecards))
+        .then(res => (this.scorecards = res.data))
         .catch(err => console.log(err));
-
-      console.log("suh");
+      console.log(this.scorecards);
     }
   },
   created() {

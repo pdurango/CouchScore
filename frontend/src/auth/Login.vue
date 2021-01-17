@@ -139,8 +139,6 @@
 </template>
 
 <script>
-import axios from "axios";
-
 export default {
   name: "Login",
   computed: {
@@ -152,14 +150,16 @@ export default {
     validate() {
       if (this.$refs.loginForm.validate()) {
         {
-          axios
-            .post("/users/authenticate", {
+          console.log(this.$api);
+          this.$api
+            .post("/users/authenticate/login", {
               username: this.loginUserName,
               password: this.loginPassword
             })
             .then(res => {
               localStorage.setItem("authToken", res.data.token);
               localStorage.setItem("username", res.data.username);
+              console.log("LOGIN SUCCESSFUL");
               this.$router.push("/");
             })
             .catch(err => console.log(err));
