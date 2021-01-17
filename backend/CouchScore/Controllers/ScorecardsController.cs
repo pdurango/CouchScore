@@ -10,6 +10,8 @@ using CouchScore.Models;
 using CouchScore.Helpers;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
+using System.Globalization;
 
 /*Helpful Links
  * 
@@ -35,9 +37,14 @@ namespace CouchScore.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Scorecard>>> GetScorecards()
         {
-            var x = m_context.Scorecards.ToListAsync();
-            return await x;
-           // return await m_context.Scorecards.ToListAsync();
+            //var claimsIdentity = this.User.Identity as ClaimsIdentity;
+            //var userId = claimsIdentity.FindFirst(ClaimTypes.Name)?.Value;
+
+            int userId = int.Parse(User.Identity.Name, new CultureInfo("en-us"));
+
+            return await m_context.Scorecards
+                .Where(scorecard => scorecard.CreatedBy == userId)
+                .ToListAsync();
         }
 
         // GET: api/Scorecards/5
