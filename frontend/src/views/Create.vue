@@ -22,7 +22,7 @@ export default {
   },
   data() {
     return {
-      scorecard: { createdBy: 1 }, //todo - fix this - dont add 1 manually - bad
+      scorecard: { createdBy: localStorage.getItem("authToken") },
       isEditable: Boolean,
       id: Number
     };

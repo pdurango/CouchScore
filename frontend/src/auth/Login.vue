@@ -18,7 +18,7 @@
           <v-tab-item>
             <v-card class="px-4">
               <v-card-text>
-                <v-form ref="loginForm" v-model="valid" lazy-validation>
+                <v-form ref="loginForm" v-model="validLogin" lazy-validation>
                   <v-row>
                     <v-col cols="12">
                       <v-text-field
@@ -47,9 +47,9 @@
                       <v-btn
                         x-large
                         block
-                        :disabled="!valid"
+                        :disabled="!validLogin"
                         color="success"
-                        @click="validate"
+                        @click="validateLogin"
                       >Login</v-btn>
                     </v-col>
                   </v-row>
@@ -60,7 +60,7 @@
           <v-tab-item>
             <v-card class="px-4">
               <v-card-text>
-                <v-form ref="registerForm" v-model="valid" lazy-validation>
+                <v-form ref="registerForm" v-model="validRegister" lazy-validation>
                   <v-row>
                     <v-col cols="12" sm="6" md="6">
                       <v-text-field
@@ -122,9 +122,9 @@
                       <v-btn
                         x-large
                         block
-                        :disabled="!valid"
+                        :disabled="!validRegister"
                         color="success"
-                        @click="validate"
+                        @click="validateRegister"
                       >Register</v-btn>
                     </v-col>
                   </v-row>
@@ -147,22 +147,47 @@ export default {
     }
   },
   methods: {
-    validate() {
+    validateLogin() {
       if (this.$refs.loginForm.validate()) {
         {
-          console.log(this.$api);
           this.$api
             .post("/users/authenticate/login", {
               username: this.loginUserName,
               password: this.loginPassword
             })
             .then(res => {
-              localStorage.setItem("authToken", res.data.token);
-              localStorage.setItem("username", res.data.username);
-              console.log("LOGIN SUCCESSFUL");
-              this.$router.push("/");
+              localStorage.setItem("username", res.data.username),
+                localStorage.setItem("id", res.data.id),
+                localStorage.setItem("authToken", res.data.token),
+                this.$router.push("/");
             })
-            .catch(err => console.log(err));
+            .catch(
+              err => (console.log(err), (this.errorMessage = err.data.message))
+            );
+        }
+      }
+    },
+    validateRegister() {
+      if (this.$refs.registerForm.validate()) {
+        {
+          this.$api
+            .post("/users/authenticate/register", {
+              username: this.loginUserName,
+              password: this.loginPassword,
+              email: this.email,
+              firstName: this.firstName,
+              lastName: this.lastName
+            })
+            .then(res => {
+              console.log(res),
+                localStorage.setItem("username", res.data.username),
+                localStorage.setItem("id", res.data.id),
+                localStorage.setItem("authToken", res.data.token),
+                this.$router.push("/");
+            })
+            .catch(
+              err => (console.log(err), (this.errorMessage = err.data.message))
+            );
         }
       }
     },
@@ -180,8 +205,9 @@ export default {
       { name: "Login", icon: "mdi-account", idx: 0 },
       { name: "Register", icon: "mdi-account-outline", idx: 1 }
     ],
-    valid: true,
-
+    validLogin: true,
+    validRegister: true,
+    errorMessage: "",
     userName: "",
     firstName: "",
     lastName: "",
