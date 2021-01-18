@@ -7,15 +7,24 @@ using CouchScore.Models;
 
 namespace CouchScore.DAL
 {
-    public class ScorecardContext : DbContext
+    public class DataContext : DbContext
     {
-        public ScorecardContext(DbContextOptions<ScorecardContext> options) : base(options)
+        public DataContext(DbContextOptions<DataContext> options) : base(options)
         {
         }
 
+        /*
+         * Scorecards
+         */
         public DbSet<Scorecard> Scorecards { get; set; }
         public DbSet<ScorecardMatch> ScorecardMatches { get; set; }
         public DbSet<ScorecardMatchOption> ScorecardMatchOptions { get; set; }
+
+        /*
+         * Users
+         */
+        public DbSet<User> Users { get; set; }
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

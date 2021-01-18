@@ -4,14 +4,16 @@ using CouchScore.DAL;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace CouchScore.Migrations
 {
-    [DbContext(typeof(ScorecardContext))]
-    partial class ScorecardContextModelSnapshot : ModelSnapshot
+    [DbContext(typeof(DataContext))]
+    [Migration("20210117235026_Init")]
+    partial class Init
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -128,7 +130,7 @@ namespace CouchScore.Migrations
                     b.ToTable("ScorecardUserSelection");
                 });
 
-            modelBuilder.Entity("CouchScore.Models.UserInfo", b =>
+            modelBuilder.Entity("CouchScore.Models.User", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -138,12 +140,21 @@ namespace CouchScore.Migrations
                     b.Property<string>("Email")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("FirstName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("LastName")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Password")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Username")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
-                    b.ToTable("UserInfo");
+                    b.ToTable("User");
                 });
 
             modelBuilder.Entity("CouchScore.Models.ScorecardLinkedUser", b =>
@@ -152,8 +163,8 @@ namespace CouchScore.Migrations
                         .WithMany("ScorecardLinkedUsers")
                         .HasForeignKey("ScorecardId");
 
-                    b.HasOne("CouchScore.Models.UserInfo", "User")
-                        .WithMany("ScorecardLinkedUsers")
+                    b.HasOne("CouchScore.Models.User", "User")
+                        .WithMany()
                         .HasForeignKey("UserId");
                 });
 

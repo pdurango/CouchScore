@@ -1,16 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace CouchScore.Models
 {
-    public class UserInfo
+    public class User
     {
         public int Id { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        public string Username { get; set; }
         public string Email { get; set; }
+
+        [JsonIgnore]
         public string Password { get; set; }
 
-        public virtual ICollection<ScorecardLinkedUser> ScorecardLinkedUsers { get; set; }
+        //public virtual ICollection<ScorecardLinkedUser> ScorecardLinkedUsers { get; set; } //todo - do i need?
     }
 }

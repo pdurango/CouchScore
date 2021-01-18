@@ -42,7 +42,7 @@ namespace CouchScore
                        .AllowAnyHeader();
             }));
 
-            services.AddDbContext<ScorecardContext>(opts => opts.UseSqlServer(Configuration["ConnectionString:ScorecardDB"]));
+            services.AddDbContext<DataContext>(opts => opts.UseSqlServer(Configuration["ConnectionString:ScorecardDB"]));
             services.AddControllers();
 
             services.AddControllers().AddNewtonsoftJson(options =>
@@ -82,7 +82,7 @@ namespace CouchScore
             // configure DI for application services
             services.AddScoped<IUserService, UserService>();
         }
-
+        
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {

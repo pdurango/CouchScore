@@ -26,9 +26,9 @@ namespace CouchScore.Controllers
     [ApiController]
     public class ScorecardsController : ControllerBase
     {
-        private readonly ScorecardContext m_context;
+        private readonly DataContext m_context;
 
-        public ScorecardsController(ScorecardContext context)
+        public ScorecardsController(DataContext context)
         {
             m_context = context;
         }

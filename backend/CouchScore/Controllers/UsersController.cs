@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using CouchScore.Models;
 using CouchScore.Services;
+using System.Threading.Tasks;
 
 namespace WebApi.Controllers
 {
@@ -19,9 +20,9 @@ namespace WebApi.Controllers
 
         [AllowAnonymous]
         [HttpPost("authenticate/login")]
-        public IActionResult AuthenticateLogin([FromBody]AuthenticateRequestLogin account)
+        public async Task<IActionResult> AuthenticateLogin([FromBody]AuthenticateRequest account)
         {
-            var response = _userService.AuthenticateLogin(account);
+            var response = await _userService.AuthenticateLoginAsync(account);
 
             if (response == null)
                 return BadRequest(new { message = "Username or password is incorrect" });
@@ -31,9 +32,9 @@ namespace WebApi.Controllers
 
         [AllowAnonymous]
         [HttpPost("authenticate/register")]
-        public IActionResult AuthenticateRegister([FromBody]AuthenticateRequestRegister account)
+        public async Task<IActionResult> AuthenticateRegister([FromBody]AuthenticateRequestRegister account)
         {
-            var response = _userService.AuthenticateRegister(account);
+            var response = await _userService.AuthenticateRegisterAsync(account);
 
             if (response == null)
                 return BadRequest(new { message = "Account information is incorrect" });

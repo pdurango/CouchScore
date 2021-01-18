@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using CouchScore.Entities;
 using CouchScore.Helpers;
 using CouchScore.Models;
 using Microsoft.Extensions.Options;
@@ -11,34 +10,39 @@ using System.Text;
 using Microsoft.IdentityModel.Tokens;
 using System.Security.Claims;
 using System.Globalization;
+using CouchScore.DAL;
+using Microsoft.EntityFrameworkCore;
 
 namespace CouchScore.Services
 {
 	public interface IUserService
 	{
-		AuthenticateResponse AuthenticateLogin(AuthenticateRequestLogin request);
-		AuthenticateResponse AuthenticateRegister(AuthenticateRequestRegister request);
+		Task<AuthenticateResponse> AuthenticateLoginAsync(AuthenticateRequest request);
+		Task<AuthenticateResponse> AuthenticateRegisterAsync(AuthenticateRequestRegister request);
 		IEnumerable<User> GetAll();
 	}
 
 	public class UserService : IUserService
 	{
+		/*
 		// users hardcoded for simplicity, store in a db with hashed passwords in production applications
 		private List<User> _users = new List<User>
 		{
 			new User { Id = 1, FirstName = "Test", LastName = "User", Username = "testtest", Password = "testtest" }
 		};
-
+		*/
 		private readonly AppSettings _appSettings;
+		private DataContext _context;
 
-		public UserService(IOptions<AppSettings> appSettings)
+		public UserService(IOptions<AppSettings> appSettings, DataContext context)
 		{
+			_context = context;
 			_appSettings = appSettings.Value;
 		}
 
-		public AuthenticateResponse AuthenticateLogin(AuthenticateRequestLogin request)
+		public async Task<AuthenticateResponse> AuthenticateLoginAsync(AuthenticateRequest request)
 		{
-			var user = _users.SingleOrDefault(x => x.Username == request.Username && x.Password == request.Password);
+			var user = await _context.Users.SingleOrDefaultAsync(x => x.Username == request.Username && x.Password == request.Password);
 
 			// return null if user not found
 			if (user == null) return null;
@@ -49,13 +53,24 @@ namespace CouchScore.Services
 			return new AuthenticateResponse(user, token);
 		}
 
-		public AuthenticateResponse AuthenticateRegister(AuthenticateRequestRegister request)
+		public async Task<AuthenticateResponse> AuthenticateRegisterAsync(AuthenticateRequestRegister request)
 		{
-			var user = _users.SingleOrDefault(x => x.Username == request.Username && x.Password == request.Password);
+			var user = await _context.Users.SingleOrDefaultAsync(x => x.Username == request.Username || x.Email == request.Email);
 
 			// return null if user not found
-			if (user == null) return null;
+			if (user != null) return null;
 
+			user = new User
+			{
+				FirstName = request.FirstName,
+				LastName = request.LastName,
+				Email = request.Email,
+				Username = request.Email,
+				Password = request.Password
+			}; //todo - add proper hash
+
+			await _context.Users.AddAsync(user);
+			await _context.SaveChangesAsync();
 			// authentication successful so generate jwt token
 			var token = GenerateJwtToken(user);
 
@@ -64,7 +79,7 @@ namespace CouchScore.Services
 
 		public IEnumerable<User> GetAll()
 		{
-			return _users;
+			return _context.Users.ToList();
 		}
 
 		/*
