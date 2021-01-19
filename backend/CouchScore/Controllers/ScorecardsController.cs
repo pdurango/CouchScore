@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
 using System.Globalization;
+using CouchScore.Services;
 
 /*Helpful Links
  * 
@@ -27,21 +28,19 @@ namespace CouchScore.Controllers
     public class ScorecardsController : ControllerBase
     {
         private readonly DataContext m_context;
+        private IUserService _userService;
 
-        public ScorecardsController(DataContext context)
+        public ScorecardsController(DataContext context, IUserService userService)
         {
             m_context = context;
+            _userService = userService;
         }
 
         // GET: api/Scorecards
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Scorecard>>> GetScorecards()
         {
-            //var claimsIdentity = this.User.Identity as ClaimsIdentity;
-            //var userId = claimsIdentity.FindFirst(ClaimTypes.Name)?.Value;
-
-            int userId = int.Parse(User.Identity.Name, new CultureInfo("en-us"));
-
+            var userId = _userService.GetUserIdFromToken(this.User);
             return await m_context.Scorecards
                 .Where(scorecard => scorecard.CreatedBy == userId)
                 .ToListAsync();
@@ -126,6 +125,7 @@ namespace CouchScore.Controllers
         [HttpPost]
         public async Task<ActionResult<string>> PostScorecard([FromBody] Scorecard scorecard)
         {
+            scorecard.CreatedBy = _userService.GetUserIdFromToken(this.User);
             m_context.Scorecards.Add(scorecard);
 
             foreach (ScorecardMatch match in scorecard.ScorecardMatches)

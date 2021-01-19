@@ -37,7 +37,7 @@ namespace WebApi.Controllers
             var response = await _userService.AuthenticateRegisterAsync(account);
 
             if (response == null)
-                return BadRequest(new { message = "Account information is incorrect" });
+                return BadRequest(new { message = "The username or email is aready in use" });
 
             return Ok(response);
         }

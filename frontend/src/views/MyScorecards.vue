@@ -3,12 +3,16 @@
     <v-layout row wrap>
       <v-flex xs10 offset-xs1>
         <div v-if="scorecards.length > 0">
-          <Scorecard
-            v-bind:key="scorecard.id"
-            v-for="scorecard in scorecards.scorecard"
-            v-bind:isEditable="this.isEditable"
-          />
+          <div v-bind:key="scorecard.id" v-for="scorecard in scorecards">
+            <Scorecard v-bind:scorecard="scorecard" v-bind:isEditable="isEditable" />
+          </div>
         </div>
+        <div v-else>You have no scorecards.</div>
+        <!--
+        <div v-bind:key="scorecard.id" v-for="scorecard in scorecards">
+          <Scorecard v-bind:scorecard="scorecard" v-bind:isEditable="this.isEditable" />
+        </div> 
+        -->
       </v-flex>
     </v-layout>
   </v-container>
@@ -33,9 +37,12 @@ export default {
       console.log("loadScorecards");
       this.$api
         .get("/scorecards")
-        .then(res => (this.scorecards = res.data))
+        .then(
+          res => (
+            (this.scorecards = res.data), console.log(this.scorecards.length)
+          )
+        )
         .catch(err => console.log(err));
-      console.log(this.scorecards);
     }
   },
   created() {

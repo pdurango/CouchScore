@@ -80,6 +80,7 @@ namespace CouchScore
             });
 
             // configure DI for application services
+            //todo - should this be Scoped or Singleton???
             services.AddScoped<IUserService, UserService>();
         }
         

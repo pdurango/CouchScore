@@ -13,13 +13,19 @@ using System.Globalization;
 using CouchScore.DAL;
 using Microsoft.EntityFrameworkCore;
 
+/* https://jasonwatmore.com/post/2019/10/11/aspnet-core-3-jwt-authentication-tutorial-with-example-api
+ * For future reference; I have not used this yet.
+ */
+
 namespace CouchScore.Services
 {
+	
 	public interface IUserService
 	{
 		Task<AuthenticateResponse> AuthenticateLoginAsync(AuthenticateRequest request);
 		Task<AuthenticateResponse> AuthenticateRegisterAsync(AuthenticateRequestRegister request);
 		IEnumerable<User> GetAll();
+		public int GetUserIdFromToken(ClaimsPrincipal claimsPrincipal);
 	}
 
 	public class UserService : IUserService
@@ -31,6 +37,8 @@ namespace CouchScore.Services
 			new User { Id = 1, FirstName = "Test", LastName = "User", Username = "testtest", Password = "testtest" }
 		};
 		*/
+		public const string STR_USERID = "UserId";
+
 		private readonly AppSettings _appSettings;
 		private DataContext _context;
 
@@ -38,6 +46,14 @@ namespace CouchScore.Services
 		{
 			_context = context;
 			_appSettings = appSettings.Value;
+		}
+
+		public int GetUserIdFromToken(ClaimsPrincipal claimsPrincipal)
+		{
+			var claimsIdentity = claimsPrincipal.Identity as ClaimsIdentity;
+			var userId = int.Parse(claimsIdentity.FindFirst("UserId")?.Value, new CultureInfo("en-us"));
+
+			return userId;
 		}
 
 		public async Task<AuthenticateResponse> AuthenticateLoginAsync(AuthenticateRequest request)
@@ -91,11 +107,12 @@ namespace CouchScore.Services
 		{
 			JwtSecurityTokenHandler tokenHandler = new JwtSecurityTokenHandler();
 			byte[] key = Encoding.ASCII.GetBytes(_appSettings.Secret);
+			var x = user.Id.ToString(new CultureInfo("en-us"));
 			SecurityTokenDescriptor tokenDescriptor = new SecurityTokenDescriptor
 			{
 				Subject = new ClaimsIdentity(new Claim[]
 				{
-					new Claim(ClaimTypes.Name, user.Id.ToString(new CultureInfo("en-us")))
+					new Claim(STR_USERID, x)
 				}),
 				//Expires = DateTime.UtcNow.AddMinutes(1),
 				Expires = DateTime.UtcNow.AddDays(365), //todo - change to proper value

@@ -38,7 +38,6 @@ api.interceptors.response.use(
          case 400:
             //do something
             break;
-
          case 401:
             alert("session expired");
             break;
