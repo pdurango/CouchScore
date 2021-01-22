@@ -6,7 +6,7 @@
 export default {
   name: "Logout",
   created() {
-    localStorage.removeItem("authToken");
+    localStorage.clear();
     this.$router.push("/login");
   }
 };

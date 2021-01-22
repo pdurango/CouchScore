@@ -10,10 +10,10 @@ Vue.prototype.$api = api;
 api.defaults.timeout = 10000;
 api.interceptors.request.use(
    (config) => {
-      console.log("api.interceptors.request");
+      //console.log("api.interceptors.request");
       //console.log("Request:", JSON.stringify(config, null, 2));
       const token = localStorage.getItem("authToken");
-      console.log(token);
+      //console.log(token);
 
       if (token) {
          config.headers.common["Authorization"] = `Bearer ${token}`;
@@ -24,6 +24,9 @@ api.interceptors.request.use(
       return Promise.reject(error);
    }
 );
+
+//Should eventually clear localstorage on certain 40X errors
+//localStorage.clear();
 api.interceptors.response.use(
    (response) => {
       if (response.status === 200 || response.status === 201) {
@@ -44,7 +47,9 @@ api.interceptors.response.use(
          case 403:
             router.replace({
                path: "/login",
-               query: { redirect: router.currentRoute.fullPath },
+               query: {
+                  redirect: router.currentRoute.fullPath,
+               },
             });
             break;
          case 404:
@@ -69,39 +74,3 @@ new Vue({
    vuetify,
    render: (h) => h(App),
 }).$mount("#app");
-
-/*
-axios.interceptors.request.use(
-   (config) => {
-      var token = localStorage.getItem("authToken");
-
-      console.log(this.router);
-      if (this.$router.path != "/login") {
-         if (token) config.headers["Authorization"] = `Bearer ${token}`;
-         else this.$router.push("/login");
-      }
-      return config;
-   },
-
-   (error) => {
-      return Promise.reject(error);
-   }
-);
-
-axios.interceptors.response.use((response) => {
-   console.log("Response:", JSON.stringify(response, null, 2));
-
-   (error) => {
-      var statusCode = error.response.status;
-      console.log(statusCode);
-      console.log(error.response.data);
-      console.log(error.response.headers);
-
-      if (statusCode == 401) {
-         localStorage.removeItem("authToken");
-         this.$router.push("/login");
-      }
-      return Promise.reject(error);
-   };
-});
-*/

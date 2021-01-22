@@ -19,6 +19,8 @@ namespace CouchScore.DAL
         public DbSet<Scorecard> Scorecards { get; set; }
         public DbSet<ScorecardMatch> ScorecardMatches { get; set; }
         public DbSet<ScorecardMatchOption> ScorecardMatchOptions { get; set; }
+        public DbSet<ScorecardLinkedUser> ScorecardLinkedUsers { get; set; }
+        public DbSet<ScorecardUserSelection> ScorecardUserSelections { get; set; }
 
         /*
          * Users

@@ -157,7 +157,7 @@ export default {
             })
             .then(res => {
               localStorage.setItem("username", res.data.username),
-                localStorage.setItem("id", res.data.id),
+                localStorage.setItem("userId", res.data.id),
                 localStorage.setItem("authToken", res.data.token),
                 this.$router.push("/");
             })

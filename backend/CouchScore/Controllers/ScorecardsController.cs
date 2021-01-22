@@ -46,6 +46,73 @@ namespace CouchScore.Controllers
                 .ToListAsync();
         }
 
+        // GET: api/Scorecards
+        [HttpGet("linked")]
+        public async Task<ActionResult<IEnumerable<Scorecard>>> GetScorecardsLinked()
+        {
+            var userId = _userService.GetUserIdFromToken(this.User);
+
+            //Only selects queries that user has created, but misses others that they participate in
+            /*
+            List<Scorecard> scorecards = await m_context.Scorecards
+                .Where(scorecard => scorecard.CreatedBy == userId)
+                .ToListAsync();
+            */
+
+            var linkedScorecards = await m_context.Scorecards.FromSqlRaw(
+                $"SELECT s.* FROM Scorecard s " +
+                "INNER JOIN ScorecardLinkedUser slu ON s.Id = slu.ScorecardId " +
+                "WHERE slu.UserId = @id", new Microsoft.Data.SqlClient.SqlParameter("@id", userId))
+                .ToListAsync();
+            return linkedScorecards;
+
+            /*
+             * If you've created a scorecards, you SHOULD be a linked member of said scorecard
+             * so we can gaurantee that the creator will be in ScorecardLinkedUsers for that 
+             * Scorecard */
+
+
+
+
+            /*
+            var linkedScorecards = await m_context.Scorecards.Join(
+                m_context.ScorecardLinkedUsers,
+                s => s.Id,
+                slu => slu.Scorecard.Id,
+                (scorecard, scorecardLinkedUser) => new
+                {
+                    Scorecard = scorecard,
+                    ScorecardLinkedUser = scorecardLinkedUser
+                })
+                .Where(user => user.ScorecardLinkedUser.Id == userId)
+                .Select(s => s.Scorecard)
+                .ToListAsync<Scorecard>();
+
+
+            return linkedScorecards;
+            */
+            /*
+    var products = await m_context.Scorecards
+    .Where(s => s.ScorecardLinkedUsers.All(slu => slu.User.Id == userId))
+    .ToListAsync();
+        return products;
+    */
+
+
+            /*
+            var linkedScorecards = await m_context.Scorecards.Join(
+                    m_context.ScorecardLinkedUsers,
+                    s => s.Id,
+                    slu => slu.Scorecard.Id,
+                    (scorecard, scorecardLinkedUser) => new
+                    {
+                        Scorecard = scorecard,
+                    })
+                .Where(user => user.ScorecardLinkedUser.Id == userId);
+            return linkedScorecards;
+            */
+        }
+
         // GET: api/Scorecards/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Scorecard>> GetScorecard(string id)
@@ -125,7 +192,8 @@ namespace CouchScore.Controllers
         [HttpPost]
         public async Task<ActionResult<string>> PostScorecard([FromBody] Scorecard scorecard)
         {
-            scorecard.CreatedBy = _userService.GetUserIdFromToken(this.User);
+            int userId = _userService.GetUserIdFromToken(this.User);
+            scorecard.CreatedBy = userId;
             m_context.Scorecards.Add(scorecard);
 
             foreach (ScorecardMatch match in scorecard.ScorecardMatches)
@@ -135,6 +203,10 @@ namespace CouchScore.Controllers
                 foreach (ScorecardMatchOption option in match.ScorecardMatchOptions)
                     m_context.ScorecardMatchOptions.Add(option);
             }
+
+            var user = m_context.Users.First(u => u.Id == userId);
+            var linkedUser = new ScorecardLinkedUser() { Scorecard = scorecard, User = user };
+            m_context.ScorecardLinkedUsers.Add(linkedUser);
 
             await m_context.SaveChangesAsync();
 
