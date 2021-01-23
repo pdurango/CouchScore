@@ -4,9 +4,13 @@
       <v-flex xs10 offset-xs1>
         <v-card>
           <v-card-title>
-            <v-text-field label="Scorecard Name" v-model="scorecard.title" :disabled="!isEditable"></v-text-field>
+            <v-text-field
+              label="Scorecard Name"
+              v-model="scorecard.title"
+              :disabled="!isNew || !isModify"
+            ></v-text-field>
           </v-card-title>
-          <div v-if="isEditable">
+          <div v-if="isNew || isModify">
             <v-card-text>
               <v-form class="px-">
                 <v-btn class="success mx-0 mt-3" @click.prevent="saveScorecard">Save Scorecard</v-btn>
@@ -19,9 +23,17 @@
                 v-bind:key="match.id"
                 v-for="match in scorecard.scorecardMatches"
                 v-bind:scorecardMatch="match"
-                v-bind:isEditable="true"
+                v-bind:isNew="isNew"
+                v-bind:isModify="isModify"
               />
             </div>
+          </div>
+          <div v-if="modify">
+            <v-card-text>
+              <v-form class="px-">
+                <v-btn class="primary mx-0 mt-3" @click="modifyScorecard">Modify</v-btn>
+              </v-form>
+            </v-card-text>
           </div>
         </v-card>
       </v-flex>
@@ -36,13 +48,10 @@ export default {
   components: {
     ScorecardMatch
   },
-  props: ["scorecard", "isEditable"],
+  props: ["scorecard", "isNew", "isModify", "modify"],
   methods: {
     addScorecardMatchArray() {
       this.$set(this.scorecard, "scorecardMatches", []);
-      //var updated = this.scorecard;
-      // updated.push({"element":{ id: 1, quantity: 1 }});
-      // this.$emit('update-local-scorecard', updated);
     },
     addScorecardMatchObject() {
       const match = {
@@ -53,10 +62,13 @@ export default {
     },
     saveScorecard() {
       this.$emit("save-scorecard", this.scorecard);
+    },
+    modifyScorecard() {
+      this.$emit("modify-scorecard", this.scorecard);
     }
   },
   created() {
-    if (this.isEditable) this.addScorecardMatchArray();
+    if (this.isNew) this.addScorecardMatchArray();
   }
 };
 </script>

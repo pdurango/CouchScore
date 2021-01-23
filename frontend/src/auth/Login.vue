@@ -43,15 +43,22 @@
                     </v-col>
                     <v-col class="d-flex" cols="12" sm="6" xsm="12"></v-col>
                     <v-spacer></v-spacer>
-                    <v-col class="d-flex" cols="12" sm="3" xsm="12" align-end>
-                      <v-btn
-                        x-large
-                        block
-                        :disabled="!validLogin"
-                        color="success"
-                        @click="validateLogin"
-                      >Login</v-btn>
-                    </v-col>
+                    <v-container>
+                      <v-row no-gutters>
+                        <v-col cols="8">
+                          <p v-if="errorMessageLogin.length > 0">{{ errorMessageLogin }}</p>
+                        </v-col>
+                        <v-col cols="4">
+                          <v-btn
+                            x-large
+                            block
+                            :disabled="!validLogin"
+                            color="success"
+                            @click="validateLogin"
+                          >Login</v-btn>
+                        </v-col>
+                      </v-row>
+                    </v-container>
                   </v-row>
                 </v-form>
               </v-card-text>
@@ -118,15 +125,22 @@
                       ></v-text-field>
                     </v-col>
                     <v-spacer></v-spacer>
-                    <v-col class="d-flex ml-auto" cols="12" sm="3" xsm="12">
-                      <v-btn
-                        x-large
-                        block
-                        :disabled="!validRegister"
-                        color="success"
-                        @click="validateRegister"
-                      >Register</v-btn>
-                    </v-col>
+                    <v-container>
+                      <v-row no-gutters>
+                        <v-col cols="8">
+                          <p v-if="errorMessageRegister.length > 0">{{ errorMessageRegister }}</p>
+                        </v-col>
+                        <v-col cols="4">
+                          <v-btn
+                            x-large
+                            block
+                            :disabled="!validRegister"
+                            color="success"
+                            @click="validateRegister"
+                          >Register</v-btn>
+                        </v-col>
+                      </v-row>
+                    </v-container>
                   </v-row>
                 </v-form>
               </v-card-text>
@@ -162,7 +176,9 @@ export default {
                 this.$router.push("/");
             })
             .catch(
-              err => (console.log(err), (this.errorMessage = err.data.message))
+              err => (
+                console.log(err), (this.errorMessageLogin = err.data.message)
+              )
             );
         }
       }
@@ -186,7 +202,9 @@ export default {
                 this.$router.push("/");
             })
             .catch(
-              err => (console.log(err), (this.errorMessage = err.data.message))
+              err => (
+                console.log(err), (this.errorMessageRegister = err.data.message)
+              )
             );
         }
       }
@@ -207,7 +225,8 @@ export default {
     ],
     validLogin: true,
     validRegister: true,
-    errorMessage: "",
+    errorMessageLogin: "",
+    errorMessageRegister: "",
     userName: "",
     firstName: "",
     lastName: "",

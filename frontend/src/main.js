@@ -15,8 +15,14 @@ api.interceptors.request.use(
       const token = localStorage.getItem("authToken");
       //console.log(token);
 
-      if (token) {
-         config.headers.common["Authorization"] = `Bearer ${token}`;
+      if (token) config.headers.common["Authorization"] = `Bearer ${token}`;
+      else {
+         router.replace({
+            path: "/login",
+            query: {
+               redirect: router.currentRoute.fullPath,
+            },
+         });
       }
       return config;
    },

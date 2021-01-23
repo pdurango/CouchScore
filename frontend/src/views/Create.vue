@@ -4,7 +4,7 @@
       <v-flex xs10 offset-xs1>
         <Scorecard
           v-bind:scorecard="scorecard"
-          v-bind:isEditable="isEditable"
+          v-bind:isNew="isEditable"
           v-on:save-scorecard="saveScorecard"
         />
       </v-flex>
@@ -22,14 +22,13 @@ export default {
   },
   data() {
     return {
-      scorecard: {}, //createdBy: localStorage.getItem("authToken")
+      scorecard: {},
       isEditable: Boolean,
       id: Number
     };
   },
   methods: {
     saveScorecard(newScorecard) {
-      //var id = newScorecard;
       this.$api
         .post("/scorecards", newScorecard)
         .then(res => (this.id = res.data.id))

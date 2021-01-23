@@ -63,8 +63,8 @@ namespace CouchScore.Controllers
                 $"SELECT s.* FROM Scorecard s " +
                 "INNER JOIN ScorecardLinkedUser slu ON s.Id = slu.ScorecardId " +
                 "WHERE slu.UserId = @id", new Microsoft.Data.SqlClient.SqlParameter("@id", userId))
-                .ToListAsync();
-            return linkedScorecards;
+                .ToListAsync<Scorecard>();
+            return Ok(linkedScorecards);
 
             /*
              * If you've created a scorecards, you SHOULD be a linked member of said scorecard
@@ -129,7 +129,7 @@ namespace CouchScore.Controllers
                 return NotFound();
             }
 
-            return scorecard;
+            return Ok(scorecard);
         }
 
         // PUT: api/Scorecards/5
