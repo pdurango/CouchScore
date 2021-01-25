@@ -31,11 +31,11 @@ api.interceptors.request.use(
    }
 );
 
-//Should eventually clear localstorage on certain 40X errors
+//todo  - Should eventually clear localstorage on certain 40X errors
 //localStorage.clear();
 api.interceptors.response.use(
    (response) => {
-      if (response.status === 200 || response.status === 201) {
+      if (response.status === 200 || response.status === 201 || response.status === 204) {
          //console.log(response);
          return Promise.resolve(response);
       } else {

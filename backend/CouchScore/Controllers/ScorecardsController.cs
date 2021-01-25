@@ -37,8 +37,8 @@ namespace CouchScore.Controllers
         }
 
         // GET: api/Scorecards
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<Scorecard>>> GetScorecards()
+        [HttpGet("all")] //todo - just for testing, remove later on
+        public async Task<ActionResult<IEnumerable<Scorecard>>> GetAllScorecards()
         {
             var userId = _userService.GetUserIdFromToken(this.User);
             return await m_context.Scorecards
@@ -47,8 +47,8 @@ namespace CouchScore.Controllers
         }
 
         // GET: api/Scorecards
-        [HttpGet("linked")]
-        public async Task<ActionResult<IEnumerable<Scorecard>>> GetScorecardsLinked()
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<Scorecard>>> GetUserScorecards()
         {
             var userId = _userService.GetUserIdFromToken(this.User);
 
@@ -145,7 +145,7 @@ namespace CouchScore.Controllers
 
             foreach (ScorecardMatch match in scorecard.ScorecardMatches)
             {
-                if(match.Id.Equals(null))
+                if(match.Id.Equals(0))
                 {
                     match.Scorecard = scorecard;
                     m_context.ScorecardMatches.Add(match);
@@ -155,7 +155,7 @@ namespace CouchScore.Controllers
 
                 foreach (ScorecardMatchOption option in match.ScorecardMatchOptions)
                 {
-                    if (option.Id.Equals(null))
+                    if (option.Id.Equals(0))
                     {
                         option.ScorecardMatch = match;
                         m_context.ScorecardMatchOptions.Add(option);
@@ -235,7 +235,11 @@ namespace CouchScore.Controllers
                 options.AddRange(matchOptions);
             }
 
+            List<ScorecardLinkedUser> linkedUsers = m_context.ScorecardLinkedUsers
+                .Where(user => user.Scorecard.Id == id).ToList();
+
             //Need to delete children in proper order (foreign key referenced)
+            m_context.ScorecardLinkedUsers.RemoveRange(linkedUsers);
             m_context.ScorecardMatchOptions.RemoveRange(options);
             m_context.ScorecardMatches.RemoveRange(matches);
             m_context.Scorecards.Remove(scorecard);

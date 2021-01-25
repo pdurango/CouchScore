@@ -5,6 +5,7 @@
         <div v-if="Object.keys(this.currentScorecard).length > 0">
           <Scorecard
             v-on:save-scorecard="saveScorecard"
+            v-on:update-scorecard="updateScorecard"
             v-bind:scorecard="currentScorecard"
             v-bind:isModify="true"
           />
@@ -13,22 +14,24 @@
           <div>
             <h1>Created By Me</h1>
             <div v-if="createdScorecards.length > 0">
-              <div v-bind:key="scorecard.id" v-for="scorecard in createdScorecards">
-                <Scorecard
-                  v-on:modify-scorecard="modifyScorecard"
-                  v-bind:scorecard="scorecard"
-                  v-bind:modify="true"
-                />
-              </div>
+              <Scorecard
+                v-for="scorecard in createdScorecards"
+                v-bind:key="scorecard.id"
+                v-on:modify-scorecard="modifyScorecard"
+                v-bind:scorecard="scorecard"
+                v-bind:modifyButton="true"
+              />
             </div>
             <div v-else>You have not created any scorecards.</div>
           </div>
           <div>
             <h1>Participating</h1>
-            <div v-if="linkedScorecards.length > 0">
-              <div v-bind:key="scorecard.id" v-for="scorecard in linkedScorecards">
-                <Scorecard v-bind:scorecard="scorecard" />
-              </div>
+            <div v-if="scorecards.length > 0">
+              <Scorecard
+                v-for="scorecard in scorecards"
+                v-bind:key="scorecard.id"
+                v-bind:scorecard="scorecard"
+              />
             </div>
             <div v-else>You have no scorecards.</div>
           </div>
@@ -48,29 +51,28 @@ export default {
   },
   data() {
     return {
-      createdScorecards: [], //Only contains scorecards created by user
-      linkedScorecards: [], //Contains scorecards created by user AND all other linked ones
+      scorecards: [], //Contains scorecards created by user AND all other linked ones
       currentScorecard: {} //The scorecard currently being modified
     };
+  },
+  computed: {
+    createdScorecards: function() {
+      //Only contains scorecards created by user
+      const userId = localStorage.getItem("userId");
+      return this.scorecards.filter(i => i.createdBy == userId);
+    }
   },
   methods: {
     loadScorecards() {
       this.$api
-        .get("/scorecards/linked")
-        .then(
-          res => ((this.linkedScorecards = res.data), this.separateScorecards())
-        )
+        .get("/scorecards")
+        .then(res => (this.scorecards = res.data))
         .catch(err => console.log(err));
     },
-    separateScorecards() {
-      const userId = localStorage.getItem("userId");
-      for (var i = 0; i < this.linkedScorecards.length; i++) {
-        console.log(this.linkedScorecards[i]);
-        if (this.linkedScorecards[i].createdBy == userId) {
-          this.createdScorecards.push(this.linkedScorecards[i]);
-        }
-      }
-    },
+
+    /*
+     * Called from children
+     */
     modifyScorecard(scorecard) {
       this.$api
         .get("/scorecards/" + scorecard.id)
@@ -79,9 +81,12 @@ export default {
     },
     saveScorecard(scorecard) {
       this.$api
-        .put("/scorecards" + scorecard.id, scorecard)
+        .put("/scorecards/" + scorecard.id, scorecard)
         .then(res => (this.currentScorecard = res.data))
         .catch(err => console.log(err));
+    },
+    updateScorecard(scorecard) {
+      this.currentScorecard = scorecard;
     }
   },
   created() {
