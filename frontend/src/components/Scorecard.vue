@@ -45,6 +45,7 @@
 
 <script>
 import ScorecardMatch from "./ScorecardMatch.vue";
+
 export default {
   name: "Scorecard",
   components: {
@@ -53,11 +54,11 @@ export default {
   props: ["scorecard", "isNew", "isModify", "modifyButton"],
   computed: {
     _scorecard: {
-      get: function() {
+      get() {
         console.log("getter called with scorecard");
         return this.scorecard;
       },
-      set: function(scorecard) {
+      set(scorecard) {
         console.log("setter called with scorecard");
         this.$emit("update-scorecard", scorecard);
       }
@@ -71,12 +72,12 @@ export default {
       const match = {
         title: ""
       };
-      var count = this._scorecard.scorecardMatches.length;
+      const count = this._scorecard.scorecardMatches.length;
       this.$set(this._scorecard.scorecardMatches, count, match);
     },
     deleteScorecard() {
       this.$api
-        .delete("/scorecards/" + this._scorecard.id)
+        .delete(`/scorecards/${this._scorecard.id}`)
         .then((this._scorecard = {}))
         .catch(err => console.log(err));
       this.$emit("save-scorecard", this._scorecard);
@@ -92,8 +93,12 @@ export default {
     }
   },
   created() {
-    if (this.isNew || (this.modify && this._scorecard.ScorecardMatches == null))
+    if (
+      this.isNew ||
+      (this.modify && this._scorecard.ScorecardMatches == null)
+    ) {
       this.addScorecardMatchArray();
+    }
   }
 };
 </script>

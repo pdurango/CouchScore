@@ -36,6 +36,7 @@
 
 <script>
 import ScorecardMatchOption from "./ScorecardMatchOption.vue";
+
 export default {
   name: "ScorecardMatch",
   components: {
@@ -44,13 +45,18 @@ export default {
   props: ["scorecardMatch", "isNew", "isModify"],
   computed: {
     _scorecardMatch: {
-      get: function() {
+      get() {
         console.log("getter called with scorecardMatch");
         return this.scorecardMatch;
       },
-      set: function(scorecardMatch) {
+      set(scorecardMatch) {
         console.log("setter called with scorecardMatch");
-        this.$emit("update-scorecard-match", scorecardMatch, this.$vnode.key);
+        this.$emit(
+          "update-scorecard-match",
+          scorecardMatch,
+          this.$vnode.key,
+          this.$vnode.key
+        );
       }
     }
   },
@@ -63,7 +69,7 @@ export default {
         title: "",
         userSelection: ""
       };
-      var count = this._scorecardMatch.scorecardMatchOptions.length;
+      const count = this._scorecardMatch.scorecardMatchOptions.length;
       this.$set(this._scorecardMatch.scorecardMatchOptions, count, option);
     },
     removeScorecardMatchObject() {
@@ -78,8 +84,8 @@ export default {
     }
   },
   created() {
-    console.log("ScorecardMatch sNew: " + this.isNew);
-    console.log("ScorecardMatch isModify: " + this.isModify);
+    console.log(`ScorecardMatch sNew: ${this.isNew}`);
+    console.log(`ScorecardMatch isModify: ${this.isModify}`);
     if (
       this.isNew ||
       (this.modify &&
@@ -87,8 +93,9 @@ export default {
           this._scorecardMatch,
           "ScorecardMatchOptions"
         ))
-    )
+    ) {
       this.addScorecardMatchOptionArray();
+    }
   }
 };
 </script>

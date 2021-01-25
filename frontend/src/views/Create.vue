@@ -33,6 +33,9 @@ export default {
         .post("/scorecards", newScorecard)
         .then(res => (this.id = res.data.id))
         .catch(err => console.log(err));
+    },
+    updateScorecard(scorecard) {
+      this.scorecard = scorecard;
     }
   },
   created() {
