@@ -6,7 +6,7 @@
           <v-card-title>
             <v-text-field
               label="Scorecard Name"
-              v-model="_scorecard.title"
+              v-model="currentScorecard.title"
               :disabled="!isNew && !isModify"
             ></v-text-field>
           </v-card-title>
@@ -18,10 +18,12 @@
                 <v-btn class="mx-0 mt-3" @click="deleteScorecard">Delete</v-btn>
               </v-form>
             </v-card-text>
-            <div v-if="_scorecard.scorecardMatches && _scorecard.scorecardMatches.length > 0">
+            <div
+              v-if="currentScorecard.scorecardMatches && currentScorecard.scorecardMatches.length > 0"
+            >
               <ScorecardMatch
                 v-on:update-scorecard-match="updateScorecardMatch"
-                v-for="match in _scorecard.scorecardMatches"
+                v-for="match in currentScorecard.scorecardMatches"
                 v-bind:key="match.id"
                 v-bind:scorecardMatch="match"
                 v-bind:isNew="isNew"
@@ -52,65 +54,61 @@ export default {
     ScorecardMatch
   },
   props: ["scorecard", "isNew", "isModify", "modifyButton"],
-  computed: {
-    _scorecard: {
-      get() {
-        console.log("getter called with scorecard");
-        return this.scorecard;
-      },
-      set(scorecard) {
-        console.log("setter called with scorecard");
-        this.$emit("update-scorecard", scorecard);
-      }
-    }
+  data() {
+    return {
+      currentScorecard: {}
+    };
   },
   methods: {
     addScorecardMatchArray() {
-      this.$set(this._scorecard, "scorecardMatches", []);
+      this.$set(this.currentScorecard, "scorecardMatches", []);
     },
     addScorecardMatchObject() {
       const match = {
         title: ""
       };
-      const count = this._scorecard.scorecardMatches.length;
-      this.$set(this._scorecard.scorecardMatches, count, match);
+      const count = this.currentScorecard.scorecardMatches.length;
+      this.$set(this.currentScorecard.scorecardMatches, count, match);
     },
     deleteScorecard() {
       this.$api
-        .delete("/scorecards/" + this._scorecard.id)
-        .then((this._scorecard = {}))
+        .delete("/scorecards/" + this.currentScorecard.id)
+        .then((this.currentScorecard = {}), this.$emit("load-scorecards"))
         .catch(err => console.log(err));
     },
     saveScorecard() {
-      //this.$emit("save-scorecard", this._scorecard);
       if (this.isNew) {
         this.$api
-          .post("/scorecards", this._scorecard)
+          .post("/scorecards", this.currentScorecard)
           .then(
-            res => (this._scorecard.id = res.data.id),
-            this.$emit("save-scorecard")
+            res => (this.currentScorecard.id = res.data.id),
+            this.$emit("save-scorecard", this.currentScorecard)
           )
           .catch(err => console.log(err));
       } else if (this.isModify) {
         this.$api
-          .put("/scorecards/" + this._scorecard.id, this._scorecard)
-          .then(res => (this.currentScorecard = res.data))
+          .put("/scorecards/" + this.currentScorecard.id, this.currentScorecard)
+          .then(
+            res => (this.currentScorecard = res.data),
+            this.$emit("save-scorecard", this.currentScorecard)
+          )
           .catch(err => console.log(err));
       }
     },
     modifyScorecard() {
-      this.$emit("modify-scorecard", this._scorecard);
+      this.$emit("modify-scorecard", this.currentScorecard);
     },
     updateScorecardMatch(scorecardMatch, key) {
-      this.$set(this._scorecard.scorecardMatches, key, scorecardMatch);
+      this.$set(this.currentScorecard.scorecardMatches, key, scorecardMatch);
     }
   },
   created() {
+    this.currentScorecard = this.scorecard;
     if (
       this.isNew ||
       (this.isModify &&
         !Object.prototype.hasOwnProperty.call(
-          this._scorecard,
+          this.currentScorecard,
           "scorecardMatches"
         ))
     ) {

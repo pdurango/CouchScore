@@ -5,7 +5,6 @@
         <div v-if="Object.keys(this.currentScorecard).length > 0">
           <Scorecard
             v-on:save-scorecard="saveScorecard"
-            v-on:update-scorecard="updateScorecard"
             v-bind:scorecard="currentScorecard"
             v-bind:isModify="true"
           />
@@ -15,7 +14,7 @@
             <h1>Created By Me</h1>
             <div v-if="_createdScorecards.length > 0">
               <Scorecard
-                v-on:update-scorecard="updateScorecard"
+                v-on:load-scorecards="loadScorecards"
                 v-on:modify-scorecard="modifyScorecard"
                 v-for="scorecard in _createdScorecards"
                 v-bind:key="scorecard.id"
@@ -69,7 +68,7 @@ export default {
       this.$api
         .get("/scorecards")
         .then(
-          res => ((this.scorecards = res.data), console.log(this.scorecards))
+          res => ((this.scorecards = res.data), (this.currentScorecard = {}))
         )
         .catch(err => console.log(err));
     },
@@ -84,16 +83,6 @@ export default {
         .catch(err => console.log(err));
     },
     saveScorecard() {
-      this.$router.push("/my-scorecards");
-    },
-    /*This function serves two purposes:
-     * 1. Updating the "currentScorecard" which occurs when modifying a created scorecard
-     * 2. Updating "scorecards" when a created scorecard is deleted. This needs to be redone,
-     *    making a GET request is jank
-     */
-    updateScorecard(scorecard) {
-      this.currentScorecard = scorecard;
-      //this.$set(this.scorecards, scorecard.id, scorecard);
       this.loadScorecards();
     }
   },

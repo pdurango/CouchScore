@@ -28,11 +28,9 @@ export default {
     };
   },
   methods: {
-    saveScorecard() {
-      this.$router.push("/my-scorecards");
-    },
-    updateScorecard(scorecard) {
+    saveScorecard(scorecard) {
       this.scorecard = scorecard;
+      this.$router.push("/my-scorecards");
     }
   },
   created() {
