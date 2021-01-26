@@ -51,12 +51,7 @@ export default {
       },
       set(scorecardMatch) {
         console.log("setter called with scorecardMatch");
-        this.$emit(
-          "update-scorecard-match",
-          scorecardMatch,
-          this.$vnode.key,
-          this.$vnode.key
-        );
+        this.$emit("update-scorecard-match", scorecardMatch, this.$vnode.key);
       }
     }
   },
@@ -84,14 +79,12 @@ export default {
     }
   },
   created() {
-    console.log(`ScorecardMatch sNew: ${this.isNew}`);
-    console.log(`ScorecardMatch isModify: ${this.isModify}`);
     if (
       this.isNew ||
-      (this.modify &&
+      (this.isModify &&
         !Object.prototype.hasOwnProperty.call(
           this._scorecardMatch,
-          "ScorecardMatchOptions"
+          "scorecardMatchOptions"
         ))
     ) {
       this.addScorecardMatchOptionArray();

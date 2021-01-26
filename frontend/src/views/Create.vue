@@ -28,11 +28,8 @@ export default {
     };
   },
   methods: {
-    saveScorecard(newScorecard) {
-      this.$api
-        .post("/scorecards", newScorecard)
-        .then(res => (this.id = res.data.id))
-        .catch(err => console.log(err));
+    saveScorecard() {
+      this.$router.push("/my-scorecards");
     },
     updateScorecard(scorecard) {
       this.scorecard = scorecard;

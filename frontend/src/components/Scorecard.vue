@@ -77,13 +77,26 @@ export default {
     },
     deleteScorecard() {
       this.$api
-        .delete(`/scorecards/${this._scorecard.id}`)
+        .delete("/scorecards/" + this._scorecard.id)
         .then((this._scorecard = {}))
         .catch(err => console.log(err));
-      this.$emit("save-scorecard", this._scorecard);
     },
     saveScorecard() {
-      this.$emit("save-scorecard", this._scorecard);
+      //this.$emit("save-scorecard", this._scorecard);
+      if (this.isNew) {
+        this.$api
+          .post("/scorecards", this._scorecard)
+          .then(
+            res => (this._scorecard.id = res.data.id),
+            this.$emit("save-scorecard")
+          )
+          .catch(err => console.log(err));
+      } else if (this.isModify) {
+        this.$api
+          .put("/scorecards/" + this._scorecard.id, this._scorecard)
+          .then(res => (this.currentScorecard = res.data))
+          .catch(err => console.log(err));
+      }
     },
     modifyScorecard() {
       this.$emit("modify-scorecard", this._scorecard);
@@ -95,7 +108,11 @@ export default {
   created() {
     if (
       this.isNew ||
-      (this.modify && this._scorecard.ScorecardMatches == null)
+      (this.isModify &&
+        !Object.prototype.hasOwnProperty.call(
+          this._scorecard,
+          "scorecardMatches"
+        ))
     ) {
       this.addScorecardMatchArray();
     }

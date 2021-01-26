@@ -9,14 +9,16 @@ Vue.config.productionTip = false;
 Vue.prototype.$api = api;
 api.defaults.timeout = 10000;
 api.interceptors.request.use(
-   (config) => {
+   (config) =>
+   {
       //console.log("api.interceptors.request");
       //console.log("Request:", JSON.stringify(config, null, 2));
       const token = localStorage.getItem("authToken");
       //console.log(token);
 
-      if (token) config.headers.common["Authorization"] = `Bearer ${token}`;
-      else {
+      if (token) config.headers.common["Authorization"] = "Bearer " + token;
+      else
+      {
          router.replace({
             path: "/login",
             query: {
@@ -26,7 +28,8 @@ api.interceptors.request.use(
       }
       return config;
    },
-   (error) => {
+   (error) =>
+   {
       return Promise.reject(error);
    }
 );
@@ -34,16 +37,21 @@ api.interceptors.request.use(
 //todo  - Should eventually clear localstorage on certain 40X errors
 //localStorage.clear();
 api.interceptors.response.use(
-   (response) => {
-      if (response.status === 200 || response.status === 201 || response.status === 204) {
+   (response) =>
+   {
+      if (response.status === 200 || response.status === 201 || response.status === 204)
+      {
          //console.log(response);
          return Promise.resolve(response);
-      } else {
+      } else
+      {
          return Promise.reject(response);
       }
    },
-   (error) => {
-      switch (error.status) {
+   (error) =>
+   {
+      switch (error.status)
+      {
          case 400:
             //do something
             break;
@@ -62,7 +70,8 @@ api.interceptors.response.use(
             alert("page not exist");
             break;
          case 502:
-            setTimeout(() => {
+            setTimeout(() =>
+            {
                router.replace({
                   path: "/login",
                   query: {

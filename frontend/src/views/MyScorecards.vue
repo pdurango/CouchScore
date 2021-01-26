@@ -13,11 +13,12 @@
         <div v-else>
           <div>
             <h1>Created By Me</h1>
-            <div v-if="createdScorecards.length > 0">
+            <div v-if="_createdScorecards.length > 0">
               <Scorecard
-                v-for="scorecard in createdScorecards"
-                v-bind:key="scorecard.id"
+                v-on:update-scorecard="updateScorecard"
                 v-on:modify-scorecard="modifyScorecard"
+                v-for="scorecard in _createdScorecards"
+                v-bind:key="scorecard.id"
                 v-bind:scorecard="scorecard"
                 v-bind:modifyButton="true"
               />
@@ -56,7 +57,7 @@ export default {
     };
   },
   computed: {
-    createdScorecards: function() {
+    _createdScorecards: function() {
       //Only contains scorecards created by user
       const userId = localStorage.getItem("userId");
       return this.scorecards.filter(i => i.createdBy == userId);
@@ -64,9 +65,12 @@ export default {
   },
   methods: {
     loadScorecards() {
+      console.log("loadScorecards");
       this.$api
         .get("/scorecards")
-        .then(res => (this.scorecards = res.data))
+        .then(
+          res => ((this.scorecards = res.data), console.log(this.scorecards))
+        )
         .catch(err => console.log(err));
     },
 
@@ -79,14 +83,18 @@ export default {
         .then(res => (this.currentScorecard = res.data))
         .catch(err => console.log(err));
     },
-    saveScorecard(scorecard) {
-      this.$api
-        .put("/scorecards/" + scorecard.id, scorecard)
-        .then(res => (this.currentScorecard = res.data))
-        .catch(err => console.log(err));
+    saveScorecard() {
+      this.$router.push("/my-scorecards");
     },
+    /*This function serves two purposes:
+     * 1. Updating the "currentScorecard" which occurs when modifying a created scorecard
+     * 2. Updating "scorecards" when a created scorecard is deleted. This needs to be redone,
+     *    making a GET request is jank
+     */
     updateScorecard(scorecard) {
       this.currentScorecard = scorecard;
+      //this.$set(this.scorecards, scorecard.id, scorecard);
+      this.loadScorecards();
     }
   },
   created() {
