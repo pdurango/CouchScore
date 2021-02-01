@@ -135,6 +135,65 @@ namespace CouchScore.Controllers
         // PUT: api/Scorecards/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for
         // more details see https://aka.ms/RazorPagesCRUD.
+        [HttpPut("inviteUsers/{id}")]
+        public async Task<IActionResult> PutInviteUsersToScorecard(string id, [FromBody] List<string> usersList)
+        {
+            if (usersList.Count <= 0)
+                return NoContent();
+
+            Scorecard scorecard = await m_context.Scorecards.FirstOrDefaultAsync(s => s.Id == id);
+            if (scorecard == null)
+                return BadRequest();
+            if(scorecard.CreatedBy != _userService.GetUserIdFromToken(this.User))
+                return BadRequest();
+
+            usersList.Sort();
+            List<User> users = m_context.Users
+            .Where(user => usersList.Contains(user.Username)).OrderBy(u => u.Username).ToList();
+
+            List<string> invalidUsernames = new List<string>();
+
+            /* 
+             * The userIds and users list are sorted in the same order, but users only contains
+             * userIds that are actual users (in table). so, I iterate through are users, and if 
+             * the exact same index for userIds does not equal the user in users, then that user 
+             * in userIds does not exist and should be removed.
+             */
+            for(int i = 0, count = users.Count; i < count; i++)
+            {
+                if (users[i].Username != usersList[i])
+                {
+                    invalidUsernames.Add(usersList[i]);
+                    usersList.RemoveAt(i);
+                }
+            }
+
+            foreach(User user in users)
+            {
+                ScorecardLinkedUser linkedUser = new ScorecardLinkedUser() { Scorecard = scorecard, User = user };
+                m_context.ScorecardLinkedUsers.Add(linkedUser);
+                m_context.Entry(user).State = EntityState.Modified;
+
+            }
+            try
+            {
+                await m_context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!ScorecardExists(id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+
+            return NoContent();
+        }
+
         [HttpPut("{id}")]
         public async Task<IActionResult> PutScorecard(string id, [FromBody] Scorecard scorecard)
         {
@@ -145,7 +204,7 @@ namespace CouchScore.Controllers
 
             foreach (ScorecardMatch match in scorecard.ScorecardMatches)
             {
-                if(match.Id.Equals(0))
+                if (match.Id.Equals(0))
                 {
                     match.Scorecard = scorecard;
                     m_context.ScorecardMatches.Add(match);
@@ -185,10 +244,6 @@ namespace CouchScore.Controllers
 
             return NoContent();
         }
-
-        // POST: api/Scorecards
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for
-        // more details see https://aka.ms/RazorPagesCRUD.
         [HttpPost]
         public async Task<ActionResult<string>> PostScorecard([FromBody] Scorecard scorecard)
         {

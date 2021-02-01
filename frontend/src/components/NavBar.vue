@@ -33,7 +33,7 @@ export default {
       drawer: false,
       links: [
         { icon: "home", text: "Home", route: "/" },
-        { icon: "person", text: "Me", route: "/about" },
+        { icon: "person", text: `Me: (${localStorage.getItem("username")})`, route: "/about" },
         { icon: "bookmarks", text: "My Scorecards", route: "/my-scorecards" },
         { icon: "add", text: "Create Scorecard", route: "/create" },
         { icon: "list", text: "Todo List", route: "/todo-home" },

@@ -89,7 +89,7 @@
                     </v-col>
                     <v-col cols="12">
                       <v-text-field
-                        v-model="userName"
+                        v-model="registerUserName"
                         :rules="[rules.required, rules.min]"
                         label="User Name"
                         required
@@ -100,7 +100,7 @@
                     </v-col>
                     <v-col cols="12">
                       <v-text-field
-                        v-model="password"
+                        v-model="registerPassword"
                         :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'"
                         :rules="[rules.required, rules.min]"
                         :type="show1 ? 'text' : 'password'"
@@ -157,7 +157,7 @@ export default {
   name: "Login",
   computed: {
     passwordMatch() {
-      return () => this.password === this.verify || "Password must match";
+      return () => this.registerPassword === this.verify || "Password must match";
     }
   },
   methods: {
@@ -170,10 +170,10 @@ export default {
               password: this.loginPassword
             })
             .then(res => {
-              localStorage.setItem("username", res.data.username),
-                localStorage.setItem("userId", res.data.id),
-                localStorage.setItem("authToken", res.data.token),
-                this.$router.push("/");
+              localStorage.setItem("username", res.data.username);
+              localStorage.setItem("userId", res.data.id);
+              localStorage.setItem("authToken", res.data.token);
+              this.$router.push("/");
             })
             .catch(
               err => (
@@ -188,17 +188,16 @@ export default {
         {
           this.$api
             .post("/users/authenticate/register", {
-              username: this.loginUserName,
-              password: this.loginPassword,
+              username: this.registerUserName,
+              password: this.registerPassword,
               email: this.email,
               firstName: this.firstName,
               lastName: this.lastName
             })
             .then(res => {
-              console.log(res),
-                localStorage.setItem("username", res.data.username),
-                localStorage.setItem("id", res.data.id),
-                localStorage.setItem("authToken", res.data.token),
+                localStorage.setItem("username", res.data.username);
+                localStorage.setItem("id", res.data.id);
+                localStorage.setItem("authToken", res.data.token);
                 this.$router.push("/");
             })
             .catch(
@@ -227,11 +226,11 @@ export default {
     validRegister: true,
     errorMessageLogin: "",
     errorMessageRegister: "",
-    userName: "",
+    registerUserName: "",
     firstName: "",
     lastName: "",
     email: "",
-    password: "",
+    registerPassword: "",
     verify: "",
     loginUserName: "",
     loginPassword: "",

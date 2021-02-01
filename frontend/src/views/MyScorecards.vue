@@ -68,7 +68,10 @@ export default {
       this.$api
         .get("/scorecards")
         .then(
-          res => ((this.scorecards = res.data), (this.currentScorecard = {}))
+          res => {
+            this.scorecards = res.data;
+            this.currentScorecard = {};
+          }
         )
         .catch(err => console.log(err));
     },
@@ -84,7 +87,7 @@ export default {
     },
     saveScorecard() {
       this.loadScorecards();
-    }
+    },
   },
   created() {
     this.loadScorecards();

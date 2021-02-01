@@ -81,7 +81,7 @@ namespace CouchScore.Services
 				FirstName = request.FirstName,
 				LastName = request.LastName,
 				Email = request.Email,
-				Username = request.Email,
+				Username = request.Username,
 				Password = request.Password
 			}; //todo - add proper hash
 

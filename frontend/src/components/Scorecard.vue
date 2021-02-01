@@ -35,6 +35,7 @@
             <v-card-text>
               <v-form class="px-">
                 <v-btn class="primary mx-0 mt-3" @click="modifyScorecard">Modify</v-btn>
+                <InviteUsers v-bind:scorecardId="currentScorecard.id"></InviteUsers>
                 <v-btn class="mx-0 mt-3" @click="deleteScorecard">Delete</v-btn>
               </v-form>
             </v-card-text>
@@ -47,11 +48,13 @@
 
 <script>
 import ScorecardMatch from "./ScorecardMatch.vue";
+import InviteUsers from "./InviteUsers.vue";
 
 export default {
   name: "Scorecard",
   components: {
-    ScorecardMatch
+    ScorecardMatch,
+    InviteUsers
   },
   props: ["scorecard", "isNew", "isModify", "modifyButton"],
   data() {
@@ -73,7 +76,11 @@ export default {
     deleteScorecard() {
       this.$api
         .delete("/scorecards/" + this.currentScorecard.id)
-        .then((this.currentScorecard = {}), this.$emit("load-scorecards"))
+        .then(res => {
+          console.log(res);
+          this.currentScorecard = {};
+          this.$emit("load-scorecards");
+        })
         .catch(err => console.log(err));
     },
     saveScorecard() {
@@ -81,16 +88,20 @@ export default {
         this.$api
           .post("/scorecards", this.currentScorecard)
           .then(
-            res => (this.currentScorecard.id = res.data.id),
-            this.$emit("save-scorecard", this.currentScorecard)
+            res => {
+              this.currentScorecard.id = res.data.id;
+              this.$emit("save-scorecard", this.currentScorecard);
+            }
           )
           .catch(err => console.log(err));
       } else if (this.isModify) {
         this.$api
           .put("/scorecards/" + this.currentScorecard.id, this.currentScorecard)
           .then(
-            res => (this.currentScorecard = res.data),
-            this.$emit("save-scorecard", this.currentScorecard)
+            res => {
+              this.currentScorecard = res.data;
+              this.$emit("save-scorecard", this.currentScorecard);
+            }
           )
           .catch(err => console.log(err));
       }
@@ -100,6 +111,9 @@ export default {
     },
     updateScorecardMatch(scorecardMatch, key) {
       this.$set(this.currentScorecard.scorecardMatches, key, scorecardMatch);
+    },
+    inviteUsers() {
+      
     }
   },
   created() {
