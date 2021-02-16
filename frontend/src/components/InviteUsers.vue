@@ -16,8 +16,9 @@
                     v-for="(username, index) in usernames"
                     v-bind:key="index"
                     >
-                        <v-col cols="12" sm="6" md="4">
+                        <v-col cols="12" sm="12" md="12">
                                 <v-text-field
+                                v-model="usernames[index]"
                                 label="Username"
                                 persistent-hint
                                 required
@@ -58,9 +59,16 @@ export default {
             .then(
                 res => 
                 {
+                this.usernames = [];
+                console.log(res.data); //todo - deleteme
+                this.dialog = false;
+                
+                /*
+                Not sure if i'm going to support displaying invalid users so ignore for now
                 this.invalidUsernames = res.data;
                 if(this.invalidUsernames.length == 0)
                     this.dialog = false;
+                */
                 //this.$emit("save-scorecard", this.currentScorecard);
                 }
             )

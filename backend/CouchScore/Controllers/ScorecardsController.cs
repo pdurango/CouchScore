@@ -144,39 +144,34 @@ namespace CouchScore.Controllers
             Scorecard scorecard = await m_context.Scorecards.FirstOrDefaultAsync(s => s.Id == id);
             if (scorecard == null)
                 return BadRequest();
-            if(scorecard.CreatedBy != _userService.GetUserIdFromToken(this.User))
+            if (scorecard.CreatedBy != _userService.GetUserIdFromToken(this.User))
                 return BadRequest();
 
-            usersList.Sort();
-            List<User> users = m_context.Users
-            .Where(user => usersList.Contains(user.Username)).OrderBy(u => u.Username).ToList();
-
-            List<string> invalidUsernames = new List<string>();
-
-            /* 
-             * The userIds and users list are sorted in the same order, but users only contains
-             * userIds that are actual users (in table). so, I iterate through are users, and if 
-             * the exact same index for userIds does not equal the user in users, then that user 
-             * in userIds does not exist and should be removed.
+            /* Cases to validate:
+             * 1. The users submitted are real (via username or email)
+             * 2. The users submitted don't contain the createdBy usr
+             * 3. The users submitted aren't already linked - handled in loop below
              */
-            for(int i = 0, count = users.Count; i < count; i++)
-            {
-                if (users[i].Username != usersList[i])
-                {
-                    invalidUsernames.Add(usersList[i]);
-                    usersList.RemoveAt(i);
-                }
-            }
+            List<User> users = m_context.Users
+            .Where(user =>
+                (usersList.Contains(user.Username) || usersList.Contains(user.Email)) &&
+                (user.Id != scorecard.CreatedBy)
+                ).ToList();
+
 
             foreach(User user in users)
             {
+                //todo - fix this later, ugly to do in a loop
+                if (m_context.ScorecardLinkedUsers.FirstOrDefault(slu => slu.User.Id == user.Id) != null)
+                    continue;
                 ScorecardLinkedUser linkedUser = new ScorecardLinkedUser() { Scorecard = scorecard, User = user };
                 m_context.ScorecardLinkedUsers.Add(linkedUser);
                 m_context.Entry(user).State = EntityState.Modified;
-
             }
             try
             {
+                //SEND EMAILS AND MAKE URE TO THROW EXCEPTION IF FAILS SO THAT
+                //CHANGES ARENT COMMITTED
                 await m_context.SaveChangesAsync();
             }
             catch (DbUpdateConcurrencyException)
